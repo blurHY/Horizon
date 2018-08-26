@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<title>New ZeroNet site!</title>
+	<meta charset="utf-8">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<base href="" target="_top" id="base">
+	<script>base.href = document.location.href.replace("/media", "").replace("index.html", "").replace(/[&?]wrapper=False/, "").replace(/[&?]wrapper_nonce=[A-Za-z0-9]+/, "")</script>
+	<script type="text/javascript" src="js/ZeroFrame.js"></script>
+	<script src="jquery-3.3.1.js"></script>
+	<script src="horizon.js"></script>
+	<style>
+		html {
+			height: 100%;
+			background: white;
+		}
+
+		.q::placeholder {
+			opacity: 0.5;
+		}
+
+		.q:-moz-placeholder {
+			opacity: 0.5;
+		}
+
+		.q:-ms-input-placeholder {
+			opacity: 0.5;
+		}
+
+		.centercontainer {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100%;
+		}
+
+		body {
+			height: 100%;
+			margin: 0
+		}
+
+		div.center {
+			display: flex;
+			height: fit-content;
+			width: 100%;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+			margin-bottom: 100px;
+		}
+
+		img.logo {
+			width: 270px;
+			max-width: 270px;
+			margin-bottom: 40px;
+		}
+
+		img.logosmall {
+			width: 130px;
+			max-width: 130px;
+			cursor: pointer;
+			margin-right: 10px;
+			margin-top: -4px;
+		}
+
+		.q {
+			border: none;
+			width: 580px;
+			height: 45px;
+			font-size: 20px;
+			color: #000000cf
+		}
+
+		.q {
+			box-shadow: 0 0 0px 2px #00000033;
+			border-radius: 100px;
+			padding: 10px 25px;
+			box-sizing: border-box;
+			transition: all 0.3s ease;
+		}
+
+		.q:focus {
+			box-shadow: 0 3px 8px 2px #00000033;
+			outline: none;
+		}
+
+		.hide {
+			display: none !important
+		}
+
+		.resultpage {
+			display: flex;
+			flex-direction: column;
+			min-height: 100%;
+			position: relative;
+		}
+
+		.topbar {
+			display: flex;
+			align-items: center;
+			flex-direction: column;
+			position: fixed;
+			margin: 0;
+			width: 100%;
+			z-index: 1;
+			height: 100px;
+			background: white;
+			box-sizing: border-box;
+			box-shadow: 0px 2px 14px #0000001f;
+		}
+
+		.tbcenter {
+			display: flex;
+			flex-direction: column;
+			height: 100px;
+			margin-left: calc(80vw - 100%);
+			justify-content: space-between;
+		}
+
+		.q.top {
+			box-shadow: 0 0 0px 1px #00000030;
+		}
+
+		.q.top:focus {
+			box-shadow: 0 0 0px 1px #00000063;
+		}
+
+		.container,
+		.container-center,
+		.container-left {
+			display: flex;
+		}
+
+		.container {
+			display: flex;
+			justify-content: center;
+			padding-top: 100px;
+			padding-bottom: 100px !important;
+			margin-left: calc(100vw - 100%);
+		}
+
+		.container-center {
+			width: 1000px;
+			padding: 20px;
+		}
+
+		.container-left {
+			width: 600px;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.pagersub>*:hover {
+			background-color: #4285f41f;
+			border: 1px #4285f41f solid;
+		}
+
+		.pagersub>* {
+			margin: 0 5px;
+			border-radius: 100%;
+			border: 1px #00000040 solid;
+			width: 35px;
+			height: 35px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			color: #0000006e;
+			user-select: none;
+			cursor: pointer;
+			transition: all 0.3s cubic-bezier(0.42, 1.62, 1, 0.98);
+		}
+
+		.pagersub>*.sel {
+			background-color: #4286f429;
+		}
+
+		.pagersub>*.sel:hover {
+			background-color: #4286f494;
+		}
+
+		.item>a.ititle {
+			color: #1a0dab;
+			text-decoration: none;
+			word-wrap: break-word;
+		}
+
+		.item {
+			display: inline;
+			flex-direction: column;
+			margin: 10px 0;
+			word-wrap: break-word;
+			word-break: break-all;
+			overflow: hidden;
+		}
+
+		.iinfo {
+			color: hsla(0, 0%, 0%, 0.459);
+			font-size: small;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			min-height: 20px;
+			opacity: 0.6;
+		}
+
+		.minfo {
+			box-sizing: border-box;
+			border-color: #909090 transparent;
+			border-style: solid;
+			border-width: 5px 4px 0 4px;
+			width: 0;
+			height: 0;
+			margin-left: 5px;
+			cursor: pointer;
+		}
+
+		.template {
+			display: none;
+		}
+
+		.pager {
+			align-self: center;
+			margin-bottom: 20px;
+			position: absolute;
+			bottom: 10px;
+
+		}
+
+		.pagersub {
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.link {
+			color: #004d00e7;
+		}
+
+		.stat {
+			margin-bottom: 20px;
+		}
+
+		.kwsphs {
+			opacity: 0.5;
+		}
+
+		.minfobox {
+			position: absolute;
+			width: 200px;
+			height: fit-content;
+			top: 300px;
+			left: 200px;
+			background: white;
+			z-index: 1;
+			box-shadow: 0px 3px 13px #00000059;
+			padding: 10px;
+			font-size: small;
+			transition: all 0.2s ease;
+			word-wrap: break-word;
+			word-break: break-all;
+		}
+
+		.kws,
+		.phs,
+		.mergedurls {
+			opacity: 0.6;
+		}
+
+
+		.match {
+			border-radius: 4px;
+			box-shadow: inset 0 0 0 1px #e7384466;
+		}
+
+		.minfobox .one,
+		.minfoitem .one {
+			margin: 0 2px;
+		}
+
+		.minfobox .onerow {
+			display: block;
+		}
+
+		.row2 {
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-end;
+		}
+
+		.row1 {
+			display: flex;
+			align-items: center;
+			margin-top: 30px;
+			height: 30px;
+		}
+
+		.right,
+		.left {
+			margin: 5px;
+			margin-right: 20px;
+		}
+
+		.right>*,
+		.left>* {
+			padding: 5px;
+			font-size: small;
+			opacity: 0.5;
+			cursor: pointer;
+		}
+
+		.minfoitem {
+			box-shadow: inset 0 0px 10px 1px #00000024;
+			padding: 10px;
+			overflow: scroll;
+			transition: all 0.2s ease;
+		}
+
+		.container-right {
+			flex: 1
+		}
+
+		.modal {
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.15);
+			z-index: 999;
+			left: 0;
+			top: 0;
+			display: none;
+		}
+
+		.modalbox {
+			position: fixed;
+			margin: auto;
+			top: 0;
+			bottom: 0;
+			right: 0;
+			left: 0;
+			background: #ffffff;
+			z-index: 1000;
+			width: 500px;
+			height: 350px;
+			box-sizing: border-box;
+			border-radius: 15px;
+			box-shadow: 12px 7px 20px 0px #00000042;
+			display: none;
+			transition: all 0.2s ease;
+			padding: 25px;
+		}
+
+		.header {
+			padding: 5px 0;
+		}
+
+		.type {
+			background-color: #bdbdbd;
+			color: #ffffff;
+			padding: 0 5px;
+			border-radius: 5px;
+			user-select: none;
+			cursor: pointer;
+			margin-left: 10px;
+			opacity: 0.6;
+			white-space: nowrap;
+		}
+
+		.zsinfo {
+			font-size: small;
+			opacity: 0.5;
+		}
+
+		.zsinfo:before {
+			content: "ZeroSites";
+			color: #ee0a73;
+		}
+
+		.zsinfo>* {
+			margin-right: 5px;
+		}
+
+		span.zsstar:after {
+			content: "★";
+			font-size: 18px;
+		}
+
+		span.zspeer:after {
+			content: "☻";
+			font-size: 15px;
+		}
+
+		@media screen and ( max-width: 1000px) {
+			img.logosmall {
+				margin: initial;
+				margin-right: 30px;
+			}
+			.tbcenter {
+				margin-left: initial;
+			}
+		}
+
+		@media screen and ( max-width: 760px) {
+			.q {
+				width: 80%;
+			}
+			img.logo {
+				width: 50%;
+			}
+			.container-center {
+				width: 100%;
+			}
+			.container-left {
+				width: 100%;
+			}
+			.container {
+				padding: 35px;
+				padding-top: 100px;
+			}
+			.modalbox {
+				width: 100%;
+				border: none;
+				border-radius: 0;
+			}
+		}
+
+		@media screen and ( max-width: 480px) {
+			.topbar {
+				flex-direction: column;
+			}
+			.q.top {
+				margin-bottom: 5px;
+				width: 100%;
+				height: 35px;
+			}
+			img.logosmall {
+				margin: 10px 0px;
+				height: 35px;
+			}
+			.container {
+				padding: 20px;
+				padding-top: 100px;
+			}
+			.row1 {
+				display: flex;
+				align-items: center;
+				height: 35px;
+				flex-direction: column;
+			}
+			.row2 {
+				display: none;
+			}
+			.row1 {
+				margin-top: 0;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="centercontainer defaultpage page">
+		<div class="center">
+			<img src="logo.svg" class="logo" onload="javascript:logoload=true">
+			<input type="text" class="q" placeholder="Loading data ...">
+		</div>
+	</div>
+	<div class="resultpage hide page">
+		<div class="topbar">
+			<div class="tbcenter">
+				<div class="row1">
+					<img src="logo.svg" class="logosmall">
+					<input type="text" class="q top" placeholder="Loading data ...">
+				</div>
+				<div class="row2">
+					<div class="left">
+
+					</div>
+					<div class="right">
+						<a id="options">Options</a>
+						<a id="help">Help</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="minfobox hide">
+			<div class="merged">
+				<div class="header">
+					<sapn>Merged </sapn><span class="mergedrowc"></span><sapn> rows</sapn>
+				</div>
+				<div class="mergedurls">
+
+				</div>
+			</div>
+			<div class="keywords">
+				<div class="header">Keywords</div>
+				<div class="kws"></div>
+			</div>
+			<div class="phrases">
+				<div class="header">Phrases</div>
+				<div class="phs"></div>
+			</div>
+			<div class="duplicates">
+				<div class="header">Duplicates</div>
+				<div class="dps"></div>
+			</div>
+			<div class="topicvotes">
+				<div class="header">Topic votes</div>
+				<div class="tvs"></div>
+			</div>
+			<div class="lastaction">
+				<div class="header">Last action</div>
+				<div class="la"></div>
+			</div>
+			<div class="nomoredata">No more data</div>
+		</div>
+		<div class="container">
+			<div class="container-center">
+				<div class="container-left">
+					<div class="stat">Found <span class="rowc">0</span> rows in <span class="sec">0</span> seconds</div>
+					<div class="item template">
+						<a class="ititle" href="/blurhy.bit">blurhy - Categories 零网相关 前端开发 后端开发</a><span class="type">Zite</span>
+						<div class="iinfo">
+							<span class="imgc"><span>Image count</span> <span class="imgcc">5</span> &nbsp;</span>
+							<span class="link"></span>
+							<div class="minfo">&nbsp;</div>
+						</div>
+						<span class="kwsphs"></span>
+						<!-- ZeroSites -->
+						<div class="zsinfo">
+							<span class="zstitle"></span>
+							<span class="zsdescription"></span>
+							<span class="zsstar"></span>
+							<span class="zspeer"></span>
+						</div>
+					</div>
+				</div>
+				<div class="container-right">
+
+				</div>
+			</div>
+		</div>
+		<div class="pager">
+			<div class="pagersub">
+				<a class="sel">1</a>
+				<a>2</a>
+				<a class="next">&gt;</a>
+			</div>
+		</div>
+	</div>
+	<div class="modal"></div>
+	<div class="modalbox">
+		<div class="options">
+
+		</div>
+		<div class="help">
+			<span class="header">Examples:</span>
+			<div>zeronet talk</div>
+			<div>"blog programming" filter:onlySiteRoot,uniqueTitle</div>
+		</div>
+	</div>
+</body>
+
+</html>

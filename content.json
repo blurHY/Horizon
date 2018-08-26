@@ -1,0 +1,53 @@
+{
+ "address": "1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn",
+ "address_index": 60223287,
+ "background-color": "#FFF",
+ "description": "A search engine",
+ "files": {
+  "data_normal.json": {
+   "sha512": "3613aebf7bf2c8e2a4ed4e5c02490931540f0626f55a570a57381ce4b190707d",
+   "size": 8756301
+  },
+  "horizon.js": {
+   "sha512": "499af265964864766f2cfa110c29bc6179e784d718e36911c05c005dd1d6c0f3",
+   "size": 28702
+  },
+  "index.html": {
+   "sha512": "7344cdd167282dca585cf5deccf0f830e0d66b6f556aca0d5f3619deeb2fd855",
+   "size": 10055
+  },
+  "jquery-3.3.1.js": {
+   "sha512": "e525248b09a6fb4022244682892e67bbf64a3e875eb889db43b0a24ab4a75077",
+   "size": 271751
+  },
+  "js/ZeroFrame.js": {
+   "sha512": "42125c7aa72496455e044e3fd940e0f05db86824c781381edb7a70f71a5f0882",
+   "size": 3370
+  },
+  "languages/zh.json": {
+   "sha512": "79b316f53f0f575b4d11a837936903888898991783bc0a238e2c8df17bd1f235",
+   "size": 614
+  },
+  "logo.png": {
+   "sha512": "8afd02179b7b7a3cf5ff1e376cce70e8a297ac447661ee71ad5c1b89c0c6acd2",
+   "size": 7294
+  },
+  "logo.svg": {
+   "sha512": "8b3a5d16cf9c172086acaaa036c6d317da829797c3a4b10e897345ba28856903",
+   "size": 29686
+  }
+ },
+ "ignore": ".idea/.*",
+ "inner_path": "content.json",
+ "modified": 1535252736,
+ "postmessage_nonce_security": true,
+ "signers_sign": "HNFq/CdaiMuMu4ps0/AJLwlOufHlr4KDB4a32m1ZpscOCpyYMKQbGfQslDMAul4j5+3vGPjmlOxSkgejAgsyk0I=",
+ "signs": {
+  "1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn": "G6GuQrooUF30lEDIokD+ZdcZfOhrC04kUwPiYSLum0ZyIzPs3Y8KJy5FBzTpYXJCPFGl7qAI07BXRw3mGU+iegA="
+ },
+ "signs_required": 1,
+ "title": "Horizon",
+ "translate": ["index.html", "horizon.js"],
+ "viewport": "width=device-width, initial-scale=1.0",
+ "zeronet_version": "0.6.3"
+}
