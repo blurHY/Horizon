@@ -1,6 +1,7 @@
 String.prototype.splice = function (idx, rem, str) {
     return this.slice(0, idx) + str + this.slice(idx + Math.abs(rem));
 };
+const filterblank = x => x.trim() !== ""
 
 !function (t, e) { "object" == typeof exports && "undefined" != typeof module ? module.exports = e() : "function" == typeof define && define.amd ? define(e) : t.timeago = e() }(this, function () { "use strict"; var t = "second_minute_hour_day_week_month_year".split("_"), e = "秒_分钟_小时_天_周_月_年".split("_"), n = [60, 60, 24, 7, 365 / 7 / 12, 12], r = { en: function (e, n) { if (0 === n) return ["just now", "right now"]; var r = t[parseInt(n / 2)]; return e > 1 && (r += "s"), [e + " " + r + " ago", "in " + e + " " + r] }, zh_CN: function (t, n) { if (0 === n) return ["刚刚", "片刻后"]; var r = e[parseInt(n / 2)]; return [t + " " + r + "前", t + " " + r + "后"] } }, a = function (t) { return parseInt(t) }, i = function (t) { return t instanceof Date ? t : !isNaN(t) || /^\d+$/.test(t) ? new Date(a(t)) : (t = (t || "").trim().replace(/\.\d+/, "").replace(/-/, "/").replace(/-/, "/").replace(/(\d)T(\d)/, "$1 $2").replace(/Z/, " UTC").replace(/([\+\-]\d\d)\:?(\d\d)/, " $1$2"), new Date(t)) }, o = function (t, e, i) { e = r[e] ? e : r[i] ? i : "en"; for (var o = 0, u = t < 0 ? 1 : 0, c = t = Math.abs(t); t >= n[o] && o < n.length; o++)t /= n[o]; return (t = a(t)) > (0 === (o *= 2) ? 9 : 1) && (o += 1), r[e](t, o, c)[u].replace("%s", t) }, u = function (t, e) { return ((e = e ? i(e) : new Date) - i(t)) / 1e3 }, c = function (t, e) { return t.getAttribute ? t.getAttribute(e) : t.attr ? t.attr(e) : void 0 }, f = function (t) { return c(t, "data-timeago") || c(t, "datetime") }, d = [], l = function (t) { t && (clearTimeout(t), delete d[t]) }, s = function (t) { if (t) l(c(t, "data-tid")); else for (var e in d) l(e) }, h = function () { function t(t, e) { for (var n = 0; n < e.length; n++) { var r = e[n]; r.enumerable = r.enumerable || !1, r.configurable = !0, "value" in r && (r.writable = !0), Object.defineProperty(t, r.key, r) } } return function (e, n, r) { return n && t(e.prototype, n), r && t(e, r), e } }(); var p = function () { function t(e, n) { !function (t, e) { if (!(t instanceof e)) throw new TypeError("Cannot call a class as a function") }(this, t), this.nowDate = e, this.defaultLocale = n || "en" } return h(t, [{ key: "setLocale", value: function (t) { this.defaultLocale = t } }, { key: "doRender", value: function (t, e, r) { var a = this, i = u(e, this.nowDate); t.innerHTML = o(i, r, this.defaultLocale); var c = function (t, e) { var n = setTimeout(function () { l(n), t() }, e); return d[n] = 0, n }(function () { a.doRender(t, e, r) }, Math.min(1e3 * function (t) { for (var e = 1, r = 0, a = Math.abs(t); t >= n[r] && r < n.length; r++)t /= n[r], e *= n[r]; return a = (a %= e) ? e - a : e, Math.ceil(a) }(i), 2147483647)); !function (t, e) { t.setAttribute ? t.setAttribute("data-tid", e) : t.attr && t.attr("data-tid", e) }(t, c) } }, { key: "render", value: function (t, e) { void 0 === t.length && (t = [t]); for (var n = void 0, r = 0, a = t.length; r < a; r++)n = t[r], s(n), this.doRender(n, f(n), e) } }, { key: "format", value: function (t, e) { return o(u(t, this.nowDate), e, this.defaultLocale) } }]), t }(), v = function (t, e) { return new p(t, e) }; return v.register = function (t, e) { r[t] = e }, v.cancel = s, v });
 
@@ -73,20 +74,45 @@ class Page extends ZeroFrame {
     initCORS() {
         this.cmd("corsPermission", ["1TaLkFrMwvbNsooF4ioKAY9EuxTBTjipT"], function (res) {
             page.cmd("corsPermission", ["1SiTEs2D3rCBxeMoLHXei2UYqFcxctdwB"], function (res) {
-
+                // This two sites are basic
             })
         })
     }
 
-
-    searchCORS(cb, kws) {
-        let wheres = [];
-        let wheres_zerosites = [];
-        for (const a of kws) {
+    generateWheres(fields) { // include > exclude > normal (priority)
+        let whereand = [];
+        let whereor = "";
+        for (const a of this.searchq) {
             let es = escapeSql(a)
-            wheres.push(`topic.title like "%${es}%" or topic.body like "%${es}%"`)
-            wheres_zerosites.push(`title like "%${es}%" or description like "%${es}%"`)
+            let likes = []
+            for (let f of fields)
+                likes.push(`${f} like "%${es}%"`);
+            whereand.push(`(${likes.join(" or ")})`)
         }
+        for (const a of this.excludekws) {
+            let es = escapeSql(a)
+            let likes = []
+            for (let f of fields)
+                likes.push(`${f} not like "%${es}%"`);
+            whereand.push(`(${likes.join(" and ")})`)
+        }
+        for (const a of this.includekws) {
+            let es = escapeSql(a)
+            let likes = []
+            for (let f of fields)
+                likes.push(`${f} like "%${es}%"`);
+            whereor = `(${likes.join(" or ")})`
+        }
+        let final = whereand.join(" and ")
+        if (whereor)
+            final = `(${final}) or ${whereor}`
+        console.log(final)
+        return final
+    }
+
+    searchCORS(cb, kws) {  // callback,keywords
+        let wheres = this.generateWheres(["topic.title", "topic.body"]);
+        let wheres_zerosites = this.generateWheres(["title", "description"]);
         let query = `SELECT
         COUNT(comment_id) AS comments_num, MAX(comment.added) AS last_comment, topic.added as last_added, CASE WHEN MAX(comment.added) IS NULL THEN topic.added ELSE MAX(comment.added) END as last_action,
         topic.*,
@@ -101,7 +127,7 @@ class Page extends ZeroFrame {
        LEFT JOIN json AS topic_creator_content ON (topic_creator_content.directory = topic_creator_json.directory AND topic_creator_content.file_name = 'content.json')
        LEFT JOIN keyvalue AS topic_creator_user ON (topic_creator_user.json_id = topic_creator_content.json_id AND topic_creator_user.key = 'cert_user_id')
        LEFT JOIN comment ON (comment.topic_uri = row_topic_uri AND comment.added < ${(Date.now() / 1000 + 120)})
-       WHERE ${wheres.join(" or ")}
+       WHERE ${wheres}
        GROUP BY topic.topic_id, topic.json_id
        HAVING last_action < ${(Date.now() / 1000 + 120)}
        `
@@ -113,28 +139,34 @@ class Page extends ZeroFrame {
        LEFT JOIN site_stat ON (site_stat.site_uri = json.directory || "_" || site.site_id)
        WHERE ${wheres_zerosites}
        GROUP BY site.json_id, site_id`
+
         page.cmd("as", ["1TaLkFrMwvbNsooF4ioKAY9EuxTBTjipT", "dbQuery", query], function (res) {
             page.cmd("as", ["1SiTEs2D3rCBxeMoLHXei2UYqFcxctdwB", "dbQuery", query0s], function (zerositesres) {
                 page.zerositesres = zerositesres
-                for (let i = 0, len = res.length; i < len; i++) {
-                    let rankadd = 1 / res[i].votes * 4
-                    let item = {
-                        rank: page.searchRank(res[i].title, kws, true) * 3 + page.searchRank(res[i].body, kws, true) + rankadd,
-                        title: res[i].title,
-                        phrases: [res[i].body.slice(0, 100)],
-                        state: 0,
-                        url: "/1TaLkFrMwvbNsooF4ioKAY9EuxTBTjipT/?Topic:" + res[i].row_topic_uri + "/" + res[i].title.replace(/[^A-Za-z0-9]/g, "+").replace(/[+]+/g, "+").replace(/[+]+$/, ""),
-                        originalZtalkObj: res[i]
-                    }
-                    page.searchres[`ztalk${i}`] = item;
-                }
+                page.searchZeroTalk(kws, res, "/1TaLkFrMwvbNsooF4ioKAY9EuxTBTjipT/?Topic:", "ztalk")
                 cb()
             })
         })
     }
 
+    searchZeroTalk(kws, dbqueryres, urlprefix, itemidprefix) {
+        for (let i = 0, len = dbqueryres.length; i < len; i++) {
+            let rankadd = 1 / dbqueryres[i].votes * 4
+            let item = {
+                rank: page.searchRank(dbqueryres[i].title, kws, true) * 3 + page.searchRank(dbqueryres[i].body, kws, true) + rankadd,
+                title: dbqueryres[i].title,
+                phrases: [dbqueryres[i].body.slice(0, 100)],
+                state: 0,
+                url: urlprefix + dbqueryres[i].row_topic_uri + "/" + dbqueryres[i].title.replace(/[^A-Za-z0-9]/g, "+").replace(/[+]+/g, "+").replace(/[+]+$/, ""),
+                originalZtalkObj: dbqueryres[i]
+            }
+            page.searchres[`${itemidprefix}${i}`] = item;
+        }
+    }
+
     Search(text) {
         this.searchq = this.parseQuery(text)
+        this.originsq = this.searchq.join(" ") // original search query without +xyz-abc
         this.searchQueryLowercase()
         let lastnow = Date.now()
         this.searchres = {}
@@ -163,16 +195,34 @@ class Page extends ZeroFrame {
 
     parseQuery(text) {
         let res = /^\s*"(.*)"\s+filter:(.+)\s*$/gi.exec(text)
-        const filterblank = x => x.trim() !== ""
         if (res && res.length >= 3) {
             this.filter = res[2]
             this.filters = this.filter.split(",").filter(filterblank)
-            return res[1].split(" ").filter(filterblank)
+            return this.parseQuery_(res[1])
         }
         else {
             this.filter = undefined
-            return text.split(" ").filter(filterblank)
+            return this.parseQuery_(text)
         }
+    }
+
+    parseQuery_(text) {
+        let kws = text.split(" ").filter(filterblank)
+        let normalkws = []
+        this.includekws = []
+        this.excludekws = []
+        for (let k of kws) {
+            let res = /(\+|-)(.+)/g.exec(k)
+            if (res && res.length === 3) {
+                if (res[1] === "+")
+                    this.includekws.push(res[2])
+                else
+                    this.excludekws.push(res[2])
+            }
+            else
+                normalkws.push(k)
+        }
+        return normalkws;
     }
 
     showStat(rowc, time) {
@@ -206,7 +256,7 @@ class Page extends ZeroFrame {
             return
         url = getSiteRootUrl(url)
         let urlwithtick = url + "/"
-        let filtered = this.zerositesres.filter((v) => v.address === url || v.address === urlwithtick)
+        let filtered = page.zerositesres.filter((v) => v.address === url || v.address === urlwithtick)
         return filtered[0]
         // [{…}] {category: 9, peers: 11, star: 1, description: "Two spiders are using nlp lib to crawl data", language: "multi", …} or undefined
     }
@@ -235,10 +285,28 @@ class Page extends ZeroFrame {
         let arr = []
         let targetNC = target.toLowerCase()
         let sqNC = searchquery.toLowerCase()
+        let included = false;
+        for (let index = 0, len = this.includekws.length; index < len; index++) {
+            const kw = this.includekws[index].toLowerCase()
+            if (targetNC.indexOf(kw) > -1) {
+                included = true;
+                break;
+            }
+        }
+        if (!included) {
+            for (let index = 0, len = this.excludekws.length; index < len; index++) {
+                const kw = this.excludekws[index].toLowerCase()
+                if (targetNC.indexOf(kw) > -1)
+                    return -1
+            }
+        }
         arr["fullMatch"] = (target === searchquery) * 6
         arr["nocaseFullMatch"] = (targetNC === sqNC) * 4
         arr["matchTimes"] = (target.split(searchquery).length - 1) * 2
         arr["nocaseMatchTimes"] = targetNC.split(sqNC).length - 1
+        arr["matchTimesOriginsq"] = (target.split(page.originsq).length - 1) * 10
+        arr["nocaseMatchTimesOriginsq"] = (targetNC.split(page.originsq.toLowerCase()).length - 1) * 6
+
         if (phrase) {
             let space = " " + searchquery + " "
             let spacenc = " " + sqNC + " "
@@ -247,6 +315,7 @@ class Page extends ZeroFrame {
             let titled = searchquery.substr(0, 1).toUpperCase() + searchquery.substr(1).toLowerCase()
             arr["phrase_wordTimesTitle"] = target.split(titled).length - 1
         }
+
         let rank = 0
         for (let x in arr)
             rank += arr[x]
@@ -256,13 +325,15 @@ class Page extends ZeroFrame {
     searchRank(target, queries, phrase = false) {
         let finalval = 0;
         let match = 0;
+
         for (let q of queries) {
             let m = this.searchRankSingle(target, q, phrase)
             if (m > 0)
                 match++;
-            finalval += m
+            let le = q.length <= 3 ? 0.2 : 1 / q.length * 10
+            finalval += m * le
         }
-        finalval *= 3 * (match / queries.length)
+        finalval *= 10 * (match / queries.length)
         return finalval;
     }
 
@@ -329,6 +400,7 @@ class Page extends ZeroFrame {
     search_filter(items) {
         if (this.filters)
             for (let f of this.filters) {
+                f = f.toLowerCase()
                 switch (f) {
                     case "uniqueTitle":
                         items = this.filterItems_UniqueTitle(items)
@@ -409,7 +481,7 @@ class Page extends ZeroFrame {
 
         title = this.ellipsis(title, 60)
 
-        ele.find("a.ititle").html(this.highlightedText(title)).attr("href", link ? link : "");
+        ele.find("a.ititle").html(this.highlightedText(title)).attr("href", link ? "/" + link : "");
 
         if (/^https?:\/\/[^\/]+\/[0-9A-Za-z\.]+\/?\s*$/g.test(link))
             ele.find(".type").text("SiteRoot");
@@ -424,7 +496,7 @@ class Page extends ZeroFrame {
             ele.find(".zsdescription").text(item.originalZeroSites.description)
             ele.find(".zsstar").text(item.originalZeroSites.star)
             ele.find(".zspeer").text(item.originalZeroSites.peers)
-        } else  ele.find(".zsinfo").remove()
+        } else ele.find(".zsinfo").remove()
 
         link = this.ellipsis(link, 50)
         ele.find(".link").html(this.highlightedText(link));
@@ -543,6 +615,10 @@ class Page extends ZeroFrame {
             pos.y += obj.offsetTop;
         }
         return pos;
+    }
+
+    showStatus(text){
+        
     }
 
     showMoreInfo(ev) {

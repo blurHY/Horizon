@@ -4,13 +4,21 @@
  "background-color": "#FFF",
  "description": "A search engine",
  "files": {
+  "LICENSE": {
+   "sha512": "4937848b94f5b50ea16c51f9e98fdcd3953aca63d63ca3bb05d8a62c107e382b",
+   "size": 35821
+  },
+  "README.md": {
+   "sha512": "276e0d275435c57b35dd9839509a9ca49e9fdaf88dbae9f2008816dee339b6c5",
+   "size": 36
+  },
   "data_normal.json": {
-   "sha512": "3613aebf7bf2c8e2a4ed4e5c02490931540f0626f55a570a57381ce4b190707d",
-   "size": 8756301
+   "sha512": "f088f63128526379bc4f3324012f08a8ca4ebeca3ab91c4e07e4b7bf8e2e013f",
+   "size": 8125400
   },
   "horizon.js": {
-   "sha512": "499af265964864766f2cfa110c29bc6179e784d718e36911c05c005dd1d6c0f3",
-   "size": 28702
+   "sha512": "cc24583a9cc76f8460a08fd90b531625f86c3e1b4ede8c73f4125096291680b5",
+   "size": 31336
   },
   "index.html": {
    "sha512": "7344cdd167282dca585cf5deccf0f830e0d66b6f556aca0d5f3619deeb2fd855",
@@ -37,13 +45,13 @@
    "size": 29686
   }
  },
- "ignore": ".idea/.*",
+ "ignore": ".idea/.*|.git/.*",
  "inner_path": "content.json",
- "modified": 1535252736,
+ "modified": 1535263603,
  "postmessage_nonce_security": true,
  "signers_sign": "HNFq/CdaiMuMu4ps0/AJLwlOufHlr4KDB4a32m1ZpscOCpyYMKQbGfQslDMAul4j5+3vGPjmlOxSkgejAgsyk0I=",
  "signs": {
-  "1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn": "G6GuQrooUF30lEDIokD+ZdcZfOhrC04kUwPiYSLum0ZyIzPs3Y8KJy5FBzTpYXJCPFGl7qAI07BXRw3mGU+iegA="
+  "1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn": "G1+0kE73y2Pzf8fbxVqlaqf0a+oeEH08ets//2txkkuSSlJ52f424lXa8TtgKEkWnTEqV/H7yT5+0EtUyWJNlzA="
  },
  "signs_required": 1,
  "title": "Horizon",
