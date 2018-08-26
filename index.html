@@ -10,6 +10,7 @@
 	<script>base.href = document.location.href.replace("/media", "").replace("index.html", "").replace(/[&?]wrapper=False/, "").replace(/[&?]wrapper_nonce=[A-Za-z0-9]+/, "")</script>
 	<script type="text/javascript" src="js/ZeroFrame.js"></script>
 	<script src="jquery-3.3.1.js"></script>
+	<script src="others.js"></script>
 	<script src="horizon.js"></script>
 	<style>
 		html {
@@ -108,7 +109,8 @@
 			height: 100px;
 			background: white;
 			box-sizing: border-box;
-			box-shadow: 0px 2px 14px #0000001f;
+			box-shadow: 0px 5px 20px 0px #0000001f;
+			transition: all 0.2s ease;
 		}
 
 		.tbcenter {
@@ -343,8 +345,8 @@
 			width: 500px;
 			height: 350px;
 			box-sizing: border-box;
-			border-radius: 15px;
-			box-shadow: 12px 7px 20px 0px #00000042;
+			border-radius: 4px;
+			/* box-shadow: 5px 3px 0px 0px #00000042; */
 			display: none;
 			transition: all 0.2s ease;
 			padding: 25px;
@@ -388,6 +390,10 @@
 		span.zspeer:after {
 			content: "☻";
 			font-size: 15px;
+		}
+
+		.topbar.top {
+			box-shadow: 0 2px 0px 1px #0000000d;
 		}
 
 		@media screen and ( max-width: 1000px) {
@@ -535,7 +541,9 @@
 					</div>
 				</div>
 				<div class="container-right">
-
+					<div class="card template">
+						
+					</div>
 				</div>
 			</div>
 		</div>
@@ -556,6 +564,7 @@
 			<span class="header">Examples:</span>
 			<div>zeronet talk</div>
 			<div>"blog programming" filter:onlySiteRoot,uniqueTitle</div>
+			<div>"zerotalk -test +blurhy" filter:uniQUEtItLe</div>
 		</div>
 	</div>
 </body>
