@@ -22,6 +22,9 @@ class Page extends ZeroFrame {
         if (!window.logoload)
             $(".logo").attr("src", "logo.png");
 
+        if (!window.logosmallload)
+            $(".logosmall").attr("src", "logo.png");;
+
         this.perPageCount = 10
         this.maxPagerBtnCount = 5
         $(".minfobox").click(() => false)
@@ -158,26 +161,70 @@ class Page extends ZeroFrame {
     }
 
     displayCards() {
-
+        if (document.body.clientWidth < 480)
+            for (let c of this.carditems)
+                this.displayCardsAsItems(c)
+        else
+            for (let c of this.carditems)
+                this.displayCardsNormal(c)
     }
 
-    displayCardsAsItems(){ //Show cards on mobile
+    displayCardsAsItems(item) { //Show cards on mobile
+        $(".container-left").append(this.generateCard(item, true))
+    }
 
+    displayCardsNormal(item) {
+        $(".container-right").append(this.generateCard(item, true))
+    }
+
+    generateCard(item, markdown = false) {
+        if (typeof item.body === "undefined")
+            return
+        let card = $(".card.template").clone().removeClass("template");
+        if (typeof item.datetime === "number")
+            item.datetime = timeagoinstance.format(item.datetime)
+        card.find(".cardtitle").text(item.title).attr("href", item.link ? item.link : "javascript:void 0")
+        if (!markdown)
+            item.card.find(".cardbody").text(item.body)
+        else
+            card.find(".cardbody").html(marked(item.body, { sanitize: true }))
+        if (item.datetime)
+            card.find(".datetime").text(item.datetime)
+        if (item.user)
+            card.find(".user").text(item.user)
+        if (item.type)
+            card.find(".cardtype").text(item.type)
+        return card;
     }
 
     searchCards() {
         this.carditems = []
-        page.cmd("as", ["138R53t3ZW7KDfSfxVpWUsMXgwUnsDNXLP", "dbQuery", `select body,date_added from pages where ${this.generateWheres(["body"])}`], function (res) {
-            for (let index, length = res.length; index < length; index++) {
-                carditems.push({
-                    type: wiki,
+        let conds = []
+        for (let x of this.searchq)
+            conds.push(`slug="${escapeSql(x)}"`)
+
+        page.cmd("as", ["138R53t3ZW7KDfSfxVpWUsMXgwUnsDNXLP", "dbQuery", `select body,date_added,slug from pages where ${conds.join(" or ")}`], function (res) {
+            let wikis = []
+            for (let index = 0, length = res.length; index < length; index++) {
+                wikis.push({
+                    type: "wiki",
                     obj: res[index],
-                    rank: searchRank(res[index].body, this.searchq, true)
+                    rank: page.searchRank(res[index].body, page.searchq, true),
+                    datetime: res[index].date_added,
+                    title: "Wiki",
+                    body: res[index].body.replace(/\[\[([A-Za-z0-9-\s]+)\]\]/g, str => ` [${str.slice(2, -2)}](/138R53t3ZW7KDfSfxVpWUsMXgwUnsDNXLP/?Page:` + encodeURI(str.slice(2, -2)) + ") "),
+                    title: res[index].slug,
+                    link: `/138R53t3ZW7KDfSfxVpWUsMXgwUnsDNXLP/?Page:${encodeURI(res[index].slug)}`
                 });
             }
+            wikis.sort((a, b) => b.datetime - a.datetime);
+            page.carditems.push(wikis[0])
+            page.carditems.sort((a, b) => b.rank - a.rank);
+            page.displayCards()
         })
-        this.carditems.sort((a, b) => b.rank - a.rank);
     }
+
+
 
     searchZeroTalk(kws, dbqueryres, urlprefix, itemidprefix) {
         for (let i = 0, len = dbqueryres.length; i < len; i++) {
@@ -243,7 +290,7 @@ class Page extends ZeroFrame {
         this.includekws = []
         this.excludekws = []
         for (let k of kws) {
-            let res = /(\+|-)(.+)/g.exec(k)
+            let res = /^(\+|-)(.+)$/g.exec(k)
             if (res && res.length === 3) {
                 if (res[1] === "+")
                     this.includekws.push(res[2])
@@ -521,13 +568,21 @@ class Page extends ZeroFrame {
         else
             ele.find(".type").remove();
 
-        if (item && item.originalZeroSites) {
-            ele.find(".zsinfo").show()
-            ele.find(".zstitle").text(item.originalZeroSites.title)
-            ele.find(".zsdescription").text(item.originalZeroSites.description)
-            ele.find(".zsstar").text(item.originalZeroSites.star)
-            ele.find(".zspeer").text(item.originalZeroSites.peers)
-        } else ele.find(".zsinfo").remove()
+        if (item) {
+            if (item.originalZeroSites) {
+                ele.find(".zsinfo").show()
+                ele.find(".zstitle").text(item.originalZeroSites.title)
+                ele.find(".zsdescription").text(item.originalZeroSites.description)
+                ele.find(".zsstar").text(item.originalZeroSites.star)
+                ele.find(".zspeer").text(item.originalZeroSites.peers)
+            } else ele.find(".zsinfo").remove()
+
+            if (item.originalZtalkObj) {
+                ele.find(".ztinfo").show()
+                ele.find(".ztvote").text(item.originalZtalkObj.votes)
+            } else ele.find(".ztinfo").remove()
+        }
+
 
         link = this.ellipsis(link, 50)
         ele.find(".link").html(this.highlightedText(link));

@@ -13,16 +13,20 @@
    "size": 36
   },
   "data_normal.json": {
-   "sha512": "f088f63128526379bc4f3324012f08a8ca4ebeca3ab91c4e07e4b7bf8e2e013f",
-   "size": 8125400
+   "sha512": "1d202ac1034875a5cefd262a800b549d296ccac72658b665642d8a997cc206fe",
+   "size": 9477441
+  },
+  "horizon.css": {
+   "sha512": "b3d5458e2cb7efe8e7b9fe2371b068880a8e6f817f2b17f3c567147e1d3e9c26",
+   "size": 8538
   },
   "horizon.js": {
-   "sha512": "a90997b7e8ec005fbba03538791846e8bd952aea2830f1f17e5f7177ece0b741",
-   "size": 29146
+   "sha512": "d645fd41ee45401282d8a0bf008b47450fb1747d2d064a75d0030f2b574a8219",
+   "size": 31480
   },
   "index.html": {
-   "sha512": "cc174c4f9bdbac628536d8c12a911976b8e950428e3bcaac1dcc9669a5f49a34",
-   "size": 10297
+   "sha512": "69c3a20fd72e1fc22348bf1a6adb33e7617b22de95cf8ef09623906e070a8033",
+   "size": 3795
   },
   "jquery-3.3.1.js": {
    "sha512": "e525248b09a6fb4022244682892e67bbf64a3e875eb889db43b0a24ab4a75077",
@@ -51,11 +55,11 @@
  },
  "ignore": ".idea/.*|.git/.*",
  "inner_path": "content.json",
- "modified": 1535274049,
+ "modified": 1535339213,
  "postmessage_nonce_security": true,
  "signers_sign": "HNFq/CdaiMuMu4ps0/AJLwlOufHlr4KDB4a32m1ZpscOCpyYMKQbGfQslDMAul4j5+3vGPjmlOxSkgejAgsyk0I=",
  "signs": {
-  "1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn": "HC4A6v15pszko2ZG9xKtZpXdnNA1VPkEPkAHWWfFUw9AO1h2909aeLNTLVp7ZQ41Ms6bAJYsZzejy0GVMsd5gtA="
+  "1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn": "G2i55MK+c2ZWzkSh97bUYqszF03GB6CcruTaMZHF1hUEClqzCsXFSIoxo5fiZ/ew6MH6uLzlgrlJTPpZ9PtogpQ="
  },
  "signs_required": 1,
  "title": "Horizon",
