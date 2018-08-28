@@ -77,16 +77,22 @@ class Page extends ZeroFrame {
 		this.getsettings()
 
 		$(".ui.dropdown").dropdown({
-			values: [{
+			values: [
+				{
 					name: "ZeroTalk",
 					value: "ZeroTalk"
-				}, {
+				},
+				{
 					name: "ZeroBlog",
 					value: "ZeroBlog"
 				},
 				{
 					name: "ZeroWiki",
 					value: "ZeroWiki"
+				},
+				{
+					name: "ZeroUp",
+					value: "ZeroUp"
 				}
 			]
 		}).find(".default").text("Type")
@@ -230,6 +236,8 @@ class Page extends ZeroFrame {
 				return this.genZeroTalkQuery()
 			case "ZeroBlog":
 				return this.genZeroBlogQuery()
+			case "ZeroUp":
+				return this.genZeroUpQuery()
 			default:
 				return null
 		}
@@ -254,6 +262,9 @@ class Page extends ZeroFrame {
 							break
 						case "ZeroBlog":
 							page.searchZeroBlog(res, `fcors${index}`, item.address)
+							break
+						case "ZeroUp":
+							page.searchZeroUp(res, `fors${index}`, item.address)
 							break
 					}
 					next(index + 1)
@@ -319,7 +330,31 @@ class Page extends ZeroFrame {
 	}
 
 	genZeroBlogQuery() {
-		return "select * from post"
+		return "select * from post where " + this.generateWheres(["post", "title"])
+	}
+
+	genZeroUpQuery() {
+		return "select * from file left join json using(json_id) where" + this.generateWheres(["file.title", "file.file_name"])
+	}
+
+	searchZeroUp(dbqueryres, itemprefix, addr) {
+		let item
+		for (let i = 0, len = dbqueryres.length; i < len; i++) {
+			try {
+				item = {
+					rank: page.searchRank(dbqueryres[i].title, page.searchq, true) * 8 + page.searchRank(dbqueryres[i].file_name, page.searchq) * 4,
+					title: dbqueryres[i].title,
+					phrases: [dbqueryres[i].title.slice(0, 100), dbqueryres[i].file_name.slice(0, 100)],
+					state: 0,
+					url: `${addr}/data/users/${dbqueryres[i].directory}/${encodeURI(dbqueryres[i].file_name)}`,
+					originalZeroupObj: dbqueryres[i]
+				}
+			} catch (e) {
+				console.log(e)
+				continue
+			}
+			page.searchres[`${itemprefix}${i}`] = item
+		}
 	}
 
 	searchCards() {
@@ -505,7 +540,7 @@ class Page extends ZeroFrame {
 		}
 	}
 
-	searchRankSingle(target, searchquery, phrase = false) {
+	searchRankSingle(target, searchquery = null, phrase = false) {
 		let arr = []
 		if (typeof target === "undefined")
 			return
@@ -548,18 +583,23 @@ class Page extends ZeroFrame {
 		return rank
 	}
 
-	searchRank(target, queries, phrase = false) {
+	searchRank(target, queries = null, phrase = false) {
 		let finalval = 0
 		let match = 0
 
+		queries = this.searchq
+
 		for (let q of queries) {
+			if (q.length <= 3 || /^[^A-Za-z0-9]+$/g.test(q))
+				continue
 			let m = this.searchRankSingle(target, q, phrase)
 			if (m > 0)
 				match++
-				let le = q.length <= 3 ? 0.2 : 1 / q.length * 10
+			let le = 1 / q.length * 10
 			finalval += m * le
 		}
 		finalval *= 10 * (match / queries.length)
+		finalval += this.searchRankSingle(target, this.originsq, true) * 40
 		return finalval
 	}
 
@@ -631,10 +671,10 @@ class Page extends ZeroFrame {
 				switch (f) {
 					case "uniquetitle":
 						items = this.filterItems_UniqueTitle(items)
-						break;
+						break
 					case "onlysiteroot":
 						items = this.filter_siteRoot(items)
-						break;
+						break
 				}
 			}
 		return items
@@ -734,6 +774,8 @@ class Page extends ZeroFrame {
 			ele.find(".type").text("ZeroTalk")
 		else if (typeof id !== "undefined" && this.searchres[id].originalZblogObj)
 			ele.find(".type").text("ZeroBlog")
+		else if (typeof id !== "undefined" && this.searchres[id].originalZeroupObj)
+			ele.find(".type").text("ZeroUp")
 		else
 			ele.find(".type").remove()
 
@@ -750,6 +792,13 @@ class Page extends ZeroFrame {
 				ele.find(".ztinfo").show()
 				ele.find(".ztvote").text(item.originalZtalkObj.votes)
 			} else ele.find(".ztinfo").remove()
+
+			if (item.originalZeroupObj) {
+				ele.find(".zuinfo").show()
+				ele.find(".zusize").text(humanFileSize(item.originalZeroupObj.size))
+				ele.find(".zudate").text(timeagoinstance.format(item.originalZeroupObj.date_added * 1000, "en-US"))
+				ele.find(".zuuser").text(item.originalZeroupObj.cert_user_id)
+			} else ele.find(".zuinfo").remove()
 		}
 
 
@@ -760,11 +809,13 @@ class Page extends ZeroFrame {
 			ele.find("span.imgc").remove()
 			ele.find("span.imgcc").remove()
 		} else ele.find("span.imgcc").text(imgc)
+		// let kwsphs = page.getFullKeywords(id).concat(page.getFullPhrases(id))
 		let kwsphs = ""
 		if (keywords)
 			kwsphs += keywords.join(",")
 		if (phrases)
 			kwsphs += phrases.join(",")
+		// kwsphs = kwsphs.join(",")
 		link = this.ellipsis(link, 150)
 		ele.find(".kwsphs").html(this.highlightedText(kwsphs))
 		ele.removeClass("template")
@@ -969,13 +1020,13 @@ class Page extends ZeroFrame {
 
 		$(".prev").click(function () {
 			page.pagenum--
-				page.showOnePage()
+			page.showOnePage()
 			page.setPager()
 		})
 
 		$(".next").click(function () {
 			page.pagenum++
-				page.showOnePage()
+			page.showOnePage()
 			page.setPager()
 		})
 
@@ -1021,7 +1072,7 @@ class Page extends ZeroFrame {
 
 			let site_type_label = $(`<span class="ui small label teal">
                                         <i class="tag icon"></i>
-                                        <span class="typename"></span>
+                                        <span class="typename ui small label olive"></span>
                                     </span>`)
 			let desc = ele.find(".description")
 			desc.append(site_type_label.find(".typename").text(element.site_type))
@@ -1112,6 +1163,7 @@ class Page extends ZeroFrame {
 		this.setSettings(function () {
 			page.getsettings(function () {
 				page.displaySettingsCORSItem()
+				page.initCORS()
 			})
 		})
 	}
@@ -1209,7 +1261,8 @@ function escapeSql(string) {
 function getSiteRootUrl(url) {
 	try {
 		return /(http:\/\/127\.0\.0\.1:4311.\/)?([A-Za-z0-9\.]+)/g.exec(url)[2]
-	} catch {}
+	} catch {
+	}
 }
 
 function isSiteRoot(url) {
@@ -1224,4 +1277,20 @@ class Text {
 			return btoa(unescape(encodeURIComponent(JSON.stringify(obj, void 0, "\t"))))
 		}
 	}
+}
+
+function humanFileSize(bytes, si) {
+	var thresh = si ? 1000 : 1024
+	if (Math.abs(bytes) < thresh) {
+		return bytes + " B"
+	}
+	var units = si
+		? ["kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+		: ["KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"]
+	var u = -1
+	do {
+		bytes /= thresh
+		++u
+	} while (Math.abs(bytes) >= thresh && u < units.length - 1)
+	return bytes.toFixed(1) + " " + units[u]
 }

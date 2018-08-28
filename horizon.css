@@ -349,7 +349,8 @@ img.logosmall {
 }
 
 .zsinfo,
-.ztinfo {
+.ztinfo,
+.zuinfo{
     font-size: small;
     opacity: 0.5;
 }
@@ -362,6 +363,11 @@ img.logosmall {
 .ztinfo:before {
     content: "ZeroTalk";
     color: #db3207;
+}
+
+.zuinfo:before {
+    content: "ZeroUp";
+    color: #4c31ff;
 }
 
 .ztvote::before {
