@@ -154,29 +154,36 @@ class Page extends ZeroFrame {
 		let whereand = []
 		let whereor = ""
 		for (const a of this.searchq) {
-			let es = escapeSql(a)
+			let es = escapeSql(a.toLowerCase())
 			let likes = []
 			for (let f of fields)
-				likes.push(`${f} like "%${es}%"`)
-			whereand.push(`(${likes.join(" or ")})`)
+				likes.push(`lower(${f}) like "%${es}%"`)
+			if (likes.length > 1)
+				whereand.push(`(${likes.join(" or ")})`)
+			else if (likes.length > 0)
+				whereand.push(likes[0])
 		}
 		for (const a of this.excludekws) {
-			let es = escapeSql(a)
+			let es = escapeSql(a.toLowerCase())
 			let likes = []
 			for (let f of fields)
-				likes.push(`${f} not like "%${es}%"`)
-			whereand.push(`(${likes.join(" and ")})`)
+				likes.push(`lower(${f}) not like "%${es}%"`)
+			if (likes.length > 1)
+				whereand.push(`(${likes.join(" and ")})`)
+			else if (likes.length > 0)
+				whereand.push(likes[0])
 		}
 		for (const a of this.includekws) {
-			let es = escapeSql(a)
+			let es = escapeSql(a.toLowerCase())
 			let likes = []
 			for (let f of fields)
-				likes.push(`${f} like "%${es}%"`)
-			whereor = `(${likes.join(" or ")})`
+				likes.push(`lower(${f}) like "%${es}%"`)
+			whereor = `${likes.join(" or ")}`
 		}
 		let final = whereand.join(" and ")
 		if (whereor)
-			final = `(${final}) or ${whereor}`
+			final = `(${final}) or (${whereor})`
+		final = final.replace(/^\s*\(.*\)\s*$/g, v => v.slice(v.indexOf("(") + 1, v.lastIndexOf(")")))
 		console.log(final)
 		return final
 	}
@@ -197,7 +204,7 @@ class Page extends ZeroFrame {
        LEFT JOIN json AS topic_creator_content ON (topic_creator_content.directory = topic_creator_json.directory AND topic_creator_content.file_name = 'content.json')
        LEFT JOIN keyvalue AS topic_creator_user ON (topic_creator_user.json_id = topic_creator_content.json_id AND topic_creator_user.key = 'cert_user_id')
        LEFT JOIN comment ON (comment.topic_uri = row_topic_uri AND comment.added < ${(Date.now() / 1000 + 120)})
-       WHERE ${wheres}
+       WHERE ${wheres} escape "\\"
        GROUP BY topic.topic_id, topic.json_id
        HAVING last_action < ${(Date.now() / 1000 + 120)}
        `
@@ -211,7 +218,7 @@ class Page extends ZeroFrame {
        LEFT JOIN json USING (json_id)
        LEFT JOIN site_star ON (site_star.site_uri = json.directory || "_" || site.site_id)
        LEFT JOIN site_stat ON (site_stat.site_uri = json.directory || "_" || site.site_id)
-       WHERE ${wheres_zerosites}
+       WHERE ${wheres_zerosites} escape "\\" 
        GROUP BY site.json_id, site_id`
 		return query0s
 	}
@@ -324,17 +331,20 @@ class Page extends ZeroFrame {
 
 	genWikiQuery() {
 		let conds = []
-		for (let x of this.searchq)
-			conds.push(`slug="${escapeSql(x)}"`)
-		return `select body,date_added,slug from pages where ${conds.join(" or ")}`
+		for (let x of this.searchq) {
+			conds.push(`lower(slug) like "%${escapeSql(x.toLowerCase())}%"`)
+			conds.push(`lower(slug) like "%${escapeSql(encodeURIComponent(x.toLowerCase()).toLowerCase())}%"`) // Some Chinese wiki encoded slug
+			conds.push(`lower(slug) like "%${escapeSql(encodeURIComponent(x.toUpperCase()).toLowerCase())}%"`)
+		}
+		return `select body,date_added,slug from pages where ${conds.join(" or ")} escape "\\"`
 	}
 
 	genZeroBlogQuery() {
-		return "select * from post where " + this.generateWheres(["post", "title"])
+		return "select * from post where " + this.generateWheres(["post", "title"]) + " escape \"\\\""
 	}
 
 	genZeroUpQuery() {
-		return "select * from file left join json using(json_id) where" + this.generateWheres(["file.title", "file.file_name"])
+		return "select * from file left join json using(json_id) where" + this.generateWheres(["file.title", "file.file_name"]) + ` escape "\\"`
 	}
 
 	searchZeroUp(dbqueryres, itemprefix, addr) {
@@ -495,7 +505,11 @@ class Page extends ZeroFrame {
 			return
 		url = getSiteRootUrl(url)
 		let urlwithtick = url + "/"
-		let filtered = page.zerositesres.filter((v) => v.address === url || v.address === urlwithtick)
+		let filtered
+		if (page.zerositesres)
+			filtered = page.zerositesres.filter((v) => v.address === url || v.address === urlwithtick)
+		else
+			filtered = []
 		return filtered[0]
 		// [{…}] {category: 9, peers: 11, star: 1, description: "Two spiders are using nlp lib to crawl data", language: "multi", …} or undefined
 	}
