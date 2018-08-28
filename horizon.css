@@ -343,9 +343,9 @@ img.logosmall {
     border-radius: 5px;
     user-select: none;
     cursor: pointer;
-    margin-left: 10px;
     opacity: 0.6;
     white-space: nowrap;
+    margin: 4px!important;
 }
 
 .zsinfo,
@@ -490,6 +490,10 @@ a {
     color: #e72e2e;
     opacity: 0.5;
     margin-left: 5px;
+}
+
+.container-left .card{
+    margin-bottom: 10px;
 }
 
 @media screen and ( max-width: 1000px) {
