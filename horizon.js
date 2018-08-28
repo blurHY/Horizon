@@ -77,8 +77,7 @@ class Page extends ZeroFrame {
 		this.getsettings()
 
 		$(".ui.dropdown").dropdown({
-			values: [
-				{
+			values: [{
 					name: "ZeroTalk",
 					value: "ZeroTalk"
 				},
@@ -469,6 +468,8 @@ class Page extends ZeroFrame {
 
 	searchRankSingle(target, searchquery, phrase = false) {
 		let arr = []
+		if (typeof target === "undefined")
+			return
 		let targetNC = target.toLowerCase()
 		let sqNC = searchquery.toLowerCase()
 		let included = false
@@ -516,7 +517,7 @@ class Page extends ZeroFrame {
 			let m = this.searchRankSingle(target, q, phrase)
 			if (m > 0)
 				match++
-			let le = q.length <= 3 ? 0.2 : 1 / q.length * 10
+				let le = q.length <= 3 ? 0.2 : 1 / q.length * 10
 			finalval += m * le
 		}
 		finalval *= 10 * (match / queries.length)
@@ -925,13 +926,13 @@ class Page extends ZeroFrame {
 
 		$(".prev").click(function () {
 			page.pagenum--
-			page.showOnePage()
+				page.showOnePage()
 			page.setPager()
 		})
 
 		$(".next").click(function () {
 			page.pagenum++
-			page.showOnePage()
+				page.showOnePage()
 			page.setPager()
 		})
 
@@ -1173,8 +1174,7 @@ function escapeSql(string) {
 function getSiteRootUrl(url) {
 	try {
 		return /(http:\/\/127\.0\.0\.1:4311.\/)?([A-Za-z0-9\.]+)/g.exec(url)[2]
-	} catch {
-	}
+	} catch {}
 }
 
 function isSiteRoot(url) {
