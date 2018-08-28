@@ -56,11 +56,8 @@ img.logosmall {
     width: 580px;
     height: 45px;
     font-size: 20px;
-    color: #000000cf
-}
-
-.q {
-    box-shadow: 0 0 0px 2px #00000033;
+    color: #000000cf;
+    box-shadow: 0 0 0px 2px #0000001f;
     border-radius: 100px;
     padding: 10px 25px;
     box-sizing: border-box;
@@ -68,7 +65,7 @@ img.logosmall {
 }
 
 .q:focus {
-    box-shadow: 0 3px 8px 2px #00000033;
+    box-shadow: 1px 2px 5px 2px #00000030;
     outline: none;
 }
 
@@ -139,12 +136,12 @@ img.logosmall {
     flex-direction: column;
 }
 
-.pagersub>*:hover {
+.pagersub > *:hover {
     background-color: #4285f41f;
     border: 1px #4285f41f solid;
 }
 
-.pagersub>* {
+.pagersub > * {
     margin: 0 5px;
     border-radius: 100%;
     border: 1px #00000040 solid;
@@ -159,15 +156,15 @@ img.logosmall {
     transition: all 0.3s cubic-bezier(0.42, 1.62, 1, 0.98);
 }
 
-.pagersub>*.sel {
+.pagersub > *.sel {
     background-color: #4286f429;
 }
 
-.pagersub>*.sel:hover {
+.pagersub > *.sel:hover {
     background-color: #4286f494;
 }
 
-.item>a.ititle {
+.item > a.ititle {
     color: #1a0dab;
     word-wrap: break-word;
 }
@@ -178,7 +175,8 @@ img.logosmall {
     margin: 10px 0;
     word-wrap: break-word;
     word-break: break-all;
-    overflow: hidden;
+    overflow: visible;
+    font-size: 18px;
 }
 
 .iinfo {
@@ -285,8 +283,8 @@ img.logosmall {
     margin-right: 20px;
 }
 
-.right>*,
-.left>* {
+.right > *,
+.left > * {
     padding: 5px;
     font-size: small;
     opacity: 0.5;
@@ -367,23 +365,25 @@ img.logosmall {
 }
 
 .ztvote::before {
-    content: "★";
-    font-family: monospace;
-    font-size: 15px
+    content: "\f005";
+    font-size: 15px;
+    font: normal normal normal 14px/1 FontAwesome;
 }
 
-.zsinfo>* {
+.zsinfo > * {
     margin-right: 5px;
 }
 
 span.zsstar:after {
-    content: "★";
-    font-size: 18px;
+    content: "\f005";
+    font-size: 15px;
+    font: normal normal normal 14px/1 FontAwesome;
 }
 
 span.zspeer:after {
-    content: "☻";
+    content: "\f007";
     font-size: 15px;
+    font: normal normal normal 14px/1 FontAwesome;
 }
 
 .topbar.top {
@@ -399,6 +399,7 @@ span.zspeer:after {
     padding: 10px;
     overflow: hidden;
     max-height: 500px;
+    max-width: 350px
 }
 
 .card * {
@@ -440,8 +441,49 @@ a {
     border-top: 0px;
 }
 
-.container-right>.card {
+.container-left > .card {
     margin: 0;
+}
+
+.settingbtn {
+    font: normal normal normal 14px/1 FontAwesome;
+    position: absolute;
+    right: calc((100% - 580px) / 2 + 20px);
+    bottom: calc((100% - 150px) / 2 + 62px);
+    cursor: pointer;
+    opacity: 0.2;
+    font-size: 20px;
+    transition: all 0.2s ease;
+}
+
+.settingbtn::before {
+    content: "\f013";
+}
+
+.settingbtn:hover {
+    opacity: 0.5;
+}
+
+.settingspage .container:first-child {
+    padding-bottom: 0 !important;
+}
+
+.description > * {
+    font-size: small;
+    margin-left: 10px;
+    opacity: 0.7;
+}
+
+.followedCorsItem {
+    color: #ddd
+}
+
+.corsinsettings .header:after {
+    content: "Enbaled";
+    font-size: small;
+    color: #e72e2e;
+    opacity: 0.5;
+    margin-left: 5px;
 }
 
 @media screen and ( max-width: 1000px) {
@@ -449,9 +491,11 @@ a {
         margin: initial;
         margin-right: 30px;
     }
+
     .tbcenter {
         margin-left: initial;
     }
+
     .container-left {
         width: 500px;
     }
@@ -461,23 +505,33 @@ a {
     .q {
         width: 80%;
     }
+
     img.logo {
         width: 50%;
     }
+
     .container-center {
         width: 100%;
     }
+
     .container-left {
         width: 100%;
     }
+
     .container {
         padding: 35px;
         padding-top: 100px;
     }
+
     .modalbox {
         width: 100%;
         border: none;
         border-radius: 0;
+    }
+
+    .settingbtn {
+        right: 20px;
+        bottom: 15px;
     }
 }
 
@@ -485,35 +539,43 @@ a {
     .topbar {
         flex-direction: column;
     }
+
     .q.top {
         margin-bottom: 5px;
         width: 100%;
         height: 35px;
     }
+
     img.logosmall {
         margin: 10px 0px;
         height: 35px;
     }
+
     .container {
         padding: 20px;
         padding-top: 100px;
     }
+
     .row1 {
         display: flex;
         align-items: center;
         height: 35px;
         flex-direction: column;
     }
+
     .row2 {
         display: none;
     }
+
     .row1 {
         margin-top: 0;
     }
+
     .container-right {
         display: none
     }
-    .card{
+
+    .card {
         max-height: 200px;
     }
 }

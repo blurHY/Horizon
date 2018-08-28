@@ -1,0 +1,72 @@
+{
+  "db_name": "Horizon",
+  "db_file": "data/Horizon.db",
+  "version": 3,
+  "maps": {
+    "users/.+/data.json": {
+      "to_table": [
+        "search_zite",
+        "main_spider"
+      ]
+    },
+    "users/.+/content.json": {
+      "to_keyvalue": [
+        "cert_user_id"
+      ]
+    }
+  },
+  "tables": {
+    "search_zite": {
+      "cols": [
+        [
+          "header",
+          "TEXT NOT NULL"
+        ],
+        [
+          "site_address",
+          "TEXT NOT NULL"
+        ],
+        [
+          "site_type",
+          "TEXT NOT NULL"
+        ],
+        [
+          "date_added",
+          "INTEGER NOT NULL"
+        ],
+        [
+          "json_id",
+          "INTEGER REFERENCES json (json_id) NOT NULL"
+        ]
+      ],
+      "indexes": [
+        "CREATE UNIQUE INDEX key_search_zite ON search_zite(json_id, site_address)"
+      ],
+      "schema_changed": 4
+    },
+    "main_spider": {
+      "cols": [
+        [
+          "header",
+          "TEXT NOT NULL"
+        ],
+        [
+          "site_address",
+          "TEXT NOT NULL"
+        ],
+        [
+          "date_added",
+          "INTEGER NOT NULL"
+        ],
+        [
+          "json_id",
+          "INTEGER REFERENCES json (json_id) NOT NULL"
+        ]
+      ],
+      "indexes": [
+        "CREATE UNIQUE INDEX key_main_spider ON main_spider(json_id, site_address)"
+      ],
+      "schema_changed": 3
+    }
+  }
+}

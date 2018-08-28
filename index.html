@@ -3,132 +3,260 @@
 <html>
 
 <head>
-	<title>New ZeroNet site!</title>
-	<meta charset="utf-8">
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<base href="" target="_top" id="base">
-	<script>base.href = document.location.href.replace("/media", "").replace("index.html", "").replace(/[&?]wrapper=False/, "").replace(/[&?]wrapper_nonce=[A-Za-z0-9]+/, "")</script>
-	<script type="text/javascript" src="js/ZeroFrame.js"></script>
-	<script src="jquery-3.3.1.js"></script>
-	<script src="others.js"></script>
-	<script src="horizon.js"></script>
-	<link rel="stylesheet" href="horizon.css">
+    <title>Horizon</title>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <base href="" target="_top" id="base">
+    <script>
+		base.href = document.location.href.replace("/media", "").replace("index.html", "").replace(/[&?]wrapper=False/, "").replace(
+			/[&?]wrapper_nonce=[A-Za-z0-9]+/, "")
+    </script>
+    <script type="text/javascript" src="js/ZeroFrame.js"></script>
+    <script src="jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="semantic.min.css">
+    <script src="semantic.min.js"></script>
+    <script src="others.js"></script>
+    <script src="horizon.js"></script>
+    <link rel="stylesheet" href="horizon.css">
+    <link rel="stylesheet" href="font-awesome.css">
 </head>
 
 <body>
-	<div class="centercontainer defaultpage page">
-		<div class="center">
-			<img src="logo.svg" class="logo" onload="javascript:logoload=true">
-			<input type="text" class="q" placeholder="Loading data ...">
-		</div>
-	</div>
-	<div class="resultpage hide page">
-		<div class="topbar">
-			<div class="tbcenter">
-				<div class="row1">
-					<img src="logo.svg" class="logosmall" onload="javascript:logosmallload=true">
-					<input type="text" class="q top" placeholder="Loading data ...">
-				</div>
-				<div class="row2">
-					<div class="left">
+<div class="centercontainer defaultpage page">
+    <div class="center">
+        <img src="logo.svg" class="logo" onload="logoload=true">
+        <input type="text" class="q" placeholder="Loading data ...">
+        <span class="settingbtn"></span>
+    </div>
+</div>
+<div class="resultpage hide page">
+    <div class="topbar">
+        <div class="tbcenter">
+            <div class="row1">
+                <img src="logo.svg" class="logosmall" onload="logosmallload=true">
+                <input type="text" class="q top" placeholder="Loading data ...">
+            </div>
+            <div class="row2">
+                <div class="left">
 
-					</div>
-					<div class="right">
-						<a id="options">Options</a>
-						<a id="help">Help</a>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="minfobox hide">
-			<div class="merged">
-				<div class="header">
-					<sapn>Merged </sapn><span class="mergedrowc"></span><sapn> rows</sapn>
-				</div>
-				<div class="mergedurls">
+                </div>
+                <div class="right">
+                    <a id="options">Options</a>
+                    <a id="help">Help</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="minfobox hide">
+        <div class="merged">
+            <div class="header">
+                <sapn>Merged</sapn>
+                <span class="mergedrowc"></span>
+                <sapn> rows</sapn>
+            </div>
+            <div class="mergedurls">
 
-				</div>
-			</div>
-			<div class="keywords">
-				<div class="header">Keywords</div>
-				<div class="kws"></div>
-			</div>
-			<div class="phrases">
-				<div class="header">Phrases</div>
-				<div class="phs"></div>
-			</div>
-			<div class="duplicates">
-				<div class="header">Duplicates</div>
-				<div class="dps"></div>
-			</div>
-			<div class="topicvotes">
-				<div class="header">Topic votes</div>
-				<div class="tvs"></div>
-			</div>
-			<div class="lastaction">
-				<div class="header">Last action</div>
-				<div class="la"></div>
-			</div>
-			<div class="nomoredata">No more data</div>
-		</div>
-		<div class="container">
-			<div class="container-center">
-				<div class="container-left">
-					<div class="stat">Found <span class="rowc">0</span> rows in <span class="sec">0</span> seconds</div>
-					<div class="item template">
-						<a class="ititle" href="/blurhy.bit">blurhy - Categories 零网相关 前端开发 后端开发</a><span class="type">Zite</span>
-						<div class="iinfo">
-							<span class="imgc"><span>Image count</span> <span class="imgcc">5</span> &nbsp;</span>
-							<span class="link"></span>
-							<div class="minfo">&nbsp;</div>
-						</div>
-						<span class="kwsphs"></span>
-						<!-- ZeroSites -->
-						<div class="zsinfo">
-							<span class="zstitle"></span>
-							<span class="zsdescription"></span>
-							<span class="zsstar"></span>
-							<span class="zspeer"></span>
-						</div>
-						<div class="ztinfo">
-							<span class="ztvote"></span>
-						</div>
-					</div>
-				</div>
-				<div class="container-right">
-					
-				</div>
-			</div>
-		</div>
-		<div class="pager">
-			<div class="pagersub">
-				<a class="sel">1</a>
-				<a>2</a>
-				<a class="next">&gt;</a>
-			</div>
-		</div>
-	</div>
-	<div class="modal"></div>
-	<div class="modalbox">
-		<div class="options">
+            </div>
+        </div>
+        <div class="keywords">
+            <div class="header">Keywords</div>
+            <div class="kws"></div>
+        </div>
+        <div class="phrases">
+            <div class="header">Phrases</div>
+            <div class="phs"></div>
+        </div>
+        <div class="duplicates">
+            <div class="header">Duplicates</div>
+            <div class="dps"></div>
+        </div>
+        <div class="topicvotes">
+            <div class="header">Topic votes</div>
+            <div class="tvs"></div>
+        </div>
+        <div class="lastaction">
+            <div class="header">Last action</div>
+            <div class="la"></div>
+        </div>
+        <div class="nomoredata">No more data</div>
+    </div>
+    <div class="container">
+        <div class="container-center">
+            <div class="container-left">
+                <div class="stat"><span>Found</span>
+                    <span class="rowc">0</span><span> rows in</span>
+                    <span class="sec">0</span><span> seconds</span>
+                </div>
+                <div class="item template">
+                    <a class="ititle" href="/blurhy.bit">blurhy - Categories 零网相关 前端开发 后端开发</a>
+                    <span class="type">Zite</span>
+                    <div class="iinfo">
+							<span class="imgc">
+								<span>Image count</span>
+								<span class="imgcc">5</span> &nbsp;</span>
+                        <span class="link"></span>
+                        <div class="minfo">&nbsp;</div>
+                    </div>
+                    <span class="kwsphs"></span>
+                    <!-- ZeroSites -->
+                    <div class="zsinfo">
+                        <span class="zstitle"></span>
+                        <span class="zsdescription"></span>
+                        <span class="zsstar"></span>
+                        <span class="zspeer"></span>
+                    </div>
+                    <div class="ztinfo">
+                        <span class="ztvote"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="container-right">
 
-		</div>
-		<div class="help">
-			<span class="header">Examples:</span>
-			<div>zeronet talk</div>
-			<div>"blog programming" filter:onlySiteRoot,uniqueTitle</div>
-			<div>"zerotalk -test +blurhy" filter:uniQUEtItLe</div>
-		</div>
-	</div>
-	<div class="card template">
-		<a class="cardtitle"></a>
-		<div class="cardsmall">
-			<span class="datetime"></span>
-			<span class="user"></span>
-			<span class="cardtype"></span>
-		</div>
-		<div class="cardbody"></div>
-	</div>
+            </div>
+        </div>
+    </div>
+    <div class="pager">
+        <div class="pagersub">
+            <a class="sel">1</a>
+            <a>2</a>
+            <a class="next">&gt;</a>
+        </div>
+    </div>
+</div>
+<div class="modal"></div>
+<div class="modalbox">
+    <div class="options">
+        Nothing
+    </div>
+    <div class="help">
+        <span class="header">Examples:</span>
+        <div>zeronet talk</div>
+        <div>"blog programming" filter:onlySiteRoot,uniqueTitle</div>
+        <div>"zerotalk -test +blurhy" filter:uniQUEtItLe</div>
+    </div>
+</div>
+<div class="card template">
+    <a class="cardtitle"></a>
+    <div class="cardsmall">
+        <span class="datetime"></span>
+        <span class="user"></span>
+        <span class="cardtype"></span>
+    </div>
+    <div class="cardbody"></div>
+</div>
+<div class="page settingspage hide">
+    <div class="ui container">
+        <img src="logo.png" class="logosmall">
+    </div>
+    <div class="ui container">
+        <div class="ui two column centered grid stackable">
+            <div class="two column row">
+                <div class="column">
+                    <h1 class="ui header">
+                        <div class="content">
+                            <span>Cross Origin Search Zites</span>
+                            <div class="sub header">The useful feature of zeronet</div>
+                        </div>
+                    </h1>
+                    <div class="ui relaxed divided list cors">
+                        <div class="item">
+                            <div class="content">
+                                <a href="" class="header">DemoOne</a>
+                                <div class="description">
+										<span class="ui small label teal">
+											<i class="table icon"></i>comments
+										</span>
+                                    <span class="ui small label">body</span>
+                                    Just now,by blurHY
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="content">
+                                <a href="" class="header">blurHY's Blog</a>
+                                <div class="description">
+										<span class="ui small label teal">
+											<i class="table icon"></i>comments</span>
+                                    <span class="ui small label">body</span>
+                                    1 hour ago,by blurHY
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui segment">
+                        <div class="ui form">
+                            <div class="two fields">
+                                <div class="ten wide field">
+                                    <label>Item header</label>
+                                    <input type="text" placeholder="blurHY's blog" class="szsheader">
+                                </div>
+                                <div class="six wide field">
+                                    <label>Site type</label>
+                                    <div class="ui selection dropdown fluid site_type">
+                                        <input type="hidden" name="site_type">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text">Type</div>
+                                        <div class="menu">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Site address</label>
+                                <input type="text" placeholder="1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn" class="siteaddr">
+                            </div>
+                            <div class="ui success message">
+                                <div class="header">Submitted</div>
+                                <p>Refresh the page and click to enable it.</p>
+                            </div>
+                            <div class="ui submit button corszitessubmit">Submit</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <h1 class="ui header">
+                        <div class="content">
+                            <span>Main Spiders</span>
+                            <div class="sub header">Zites of crawled data</div>
+                        </div>
+                    </h1>
+                    <div class="ui relaxed divided list mspzites">
+                        <div class="item">
+                            <div class="content">
+                                <a href="" class="header">Example</a>
+                                <div class="description">
+                                    <span class="ui small label">body</span> This is not implemented
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui segment">
+                        <div class="ui form">
+                            <div class="field">
+                                <label>Item header</label>
+                                <input type="text" placeholder="blurHY's Spider" class="msheader">
+                            </div>
+                            <div class="two fields">
+                                <div class="seven wide field">
+                                    <label>Spider Name</label>
+                                    <input type="text" placeholder="The name to display" class="spidername">
+                                </div>
+                                <div class="nine wide field">
+                                    <label>Zite address</label>
+                                    <input type="text" placeholder="Not .bit domain" class="spideraddr">
+                                </div>
+                            </div>
+                            <div class="ui success message">
+                                <div class="header">Submitted</div>
+                            </div>
+                            <div class="ui submit button">Submit</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 
 </html>
