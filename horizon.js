@@ -80,6 +80,9 @@ class Page extends ZeroFrame {
 			values: [{
 					name: "ZeroTalk",
 					value: "ZeroTalk"
+				}, {
+					name: "ZeroBlog",
+					value: "ZeroBlog"
 				},
 				{
 					name: "ZeroWiki",
@@ -225,6 +228,8 @@ class Page extends ZeroFrame {
 				return this.genWikiQuery()
 			case "ZeroTalk":
 				return this.genZeroTalkQuery()
+			case "ZeroBlog":
+				return this.genZeroBlogQuery()
 			default:
 				return null
 		}
@@ -242,9 +247,14 @@ class Page extends ZeroFrame {
 				page.cmd("as", [item.address, "dbQuery", query], function (res) {
 					switch (item.type) {
 						case "ZeroWiki":
-							page.carditems.push(page.searchWiki(res))
+							page.carditems.push(page.searchWiki(res, item.address))
+							break
 						case "ZeroTalk":
 							page.searchZeroTalk(page.searchq, res, `${item.address}/?Topic:`, `fcors${index}`)
+							break
+						case "ZeroBlog":
+							page.searchZeroBlog(res, `fcors${index}`, item.address)
+							break
 					}
 					next(index + 1)
 				})
@@ -308,13 +318,17 @@ class Page extends ZeroFrame {
 		return `select body,date_added,slug from pages where ${conds.join(" or ")}`
 	}
 
+	genZeroBlogQuery() {
+		return "select * from post"
+	}
+
 	searchCards() {
 		page.cmd("as", ["138R53t3ZW7KDfSfxVpWUsMXgwUnsDNXLP", "dbQuery", this.genWikiQuery()], function (res) {
-			page.carditems.push(page.searchWiki(res))
+			page.carditems.push(page.searchWiki(res, "138R53t3ZW7KDfSfxVpWUsMXgwUnsDNXLP"))
 		})
 	}
 
-	searchWiki(dbquery) {
+	searchWiki(dbquery, addr) {
 		let wikis = []
 		for (let index = 0, length = dbquery.length; index < length; index++) {
 			wikis.push({
@@ -322,9 +336,9 @@ class Page extends ZeroFrame {
 				obj: dbquery[index],
 				rank: page.searchRank(dbquery[index].body, page.searchq, true),
 				datetime: dbquery[index].date_added,
-				body: dbquery[index].body.replace(/\[\[([A-Za-z0-9\-\s]+)\]\]/g, str => ` [${str.slice(2, -2)}](/138R53t3ZW7KDfSfxVpWUsMXgwUnsDNXLP/?Page:` + encodeURI(str.slice(2, -2)) + ") "),
+				body: dbquery[index].body.replace(/\[\[([A-Za-z0-9\-\s]+)\]\]/g, str => ` [${str.slice(2, -2)}](/${addr}/?Page:` + encodeURI(str.slice(2, -2)) + ") "),
 				title: dbquery[index].slug,
-				link: `/138R53t3ZW7KDfSfxVpWUsMXgwUnsDNXLP/?Page:${encodeURI(dbquery[index].slug)}`
+				link: `/${addr}/?Page:${encodeURI(dbquery[index].slug)}`
 			})
 		}
 		wikis.sort((a, b) => b.datetime - a.datetime)
@@ -334,14 +348,19 @@ class Page extends ZeroFrame {
 
 	searchZeroTalk(kws, dbqueryres, urlprefix, itemidprefix) {
 		for (let i = 0, len = dbqueryres.length; i < len; i++) {
-			let rankadd = 1 / dbqueryres[i].votes * 4
-			let item = {
-				rank: page.searchRank(dbqueryres[i].title, kws, true) * 3 + page.searchRank(dbqueryres[i].body, kws, true) + rankadd,
-				title: dbqueryres[i].title,
-				phrases: [dbqueryres[i].body.slice(0, 100)],
-				state: 0,
-				url: urlprefix + dbqueryres[i].row_topic_uri + "/" + dbqueryres[i].title.replace(/[^A-Za-z0-9]/g, "+").replace(/[+]+/g, "+").replace(/[+]+$/, ""),
-				originalZtalkObj: dbqueryres[i]
+			try {
+				var rankadd = 1 / dbqueryres[i].votes * 4
+				var item = {
+					rank: page.searchRank(dbqueryres[i].title, kws, true) * 3 + page.searchRank(dbqueryres[i].body, kws, true) + rankadd,
+					title: dbqueryres[i].title,
+					phrases: [dbqueryres[i].body.slice(0, 100)],
+					state: 0,
+					url: urlprefix + dbqueryres[i].row_topic_uri + "/" + dbqueryres[i].title.replace(/[^A-Za-z0-9]/g, "+").replace(/[+]+/g, "+").replace(/[+]+$/, ""),
+					originalZtalkObj: dbqueryres[i]
+				}
+			} catch (e) {
+				console.log(e)
+				continue
 			}
 			page.searchres[`${itemidprefix}${i}`] = item
 		}
@@ -464,6 +483,26 @@ class Page extends ZeroFrame {
 				ret.push(target[i][1])
 		}
 		return ret
+	}
+
+	searchZeroBlog(dbqueryres, itemprefix, addr) {
+		for (let index = 0, length = dbqueryres.length; index < length; index++) {
+			const row = dbqueryres[index]
+			let ranktitle = this.searchRank(row.title, page.searchq) * 8
+			let rankbody = this.searchRank(row.body, page.searchq, true)
+			let total = ranktitle + rankbody
+			if (total <= 0)
+				continue
+			let item = {
+				rank: total,
+				title: row.title,
+				phrases: [row.body.slice(0, 100)],
+				state: 0,
+				url: `/${addr}/?Post:${row.post_id}`,
+				originalZblogObj: row
+			}
+			page.searchres[`${itemprefix}${index}`] = item
+		}
 	}
 
 	searchRankSingle(target, searchquery, phrase = false) {
@@ -592,8 +631,10 @@ class Page extends ZeroFrame {
 				switch (f) {
 					case "uniquetitle":
 						items = this.filterItems_UniqueTitle(items)
+						break;
 					case "onlysiteroot":
 						items = this.filter_siteRoot(items)
+						break;
 				}
 			}
 		return items
@@ -685,12 +726,14 @@ class Page extends ZeroFrame {
 
 		title = this.ellipsis(title, 60)
 
-		ele.find("a.ititle").html(this.highlightedText(title)).attr("href", link ? "/" + link : "")
+		ele.find("a.ititle").html(this.highlightedText(title)).attr("href", link ? (link.startsWith("/") ? link : ("/" + link)) : "")
 
 		if (/^https?:\/\/[^\/]+\/[0-9A-Za-z\.]+\/?\s*$/g.test(link))
 			ele.find(".type").text("SiteRoot")
 		else if (typeof id !== "undefined" && this.searchres[id].originalZtalkObj)
 			ele.find(".type").text("ZeroTalk")
+		else if (typeof id !== "undefined" && this.searchres[id].originalZblogObj)
+			ele.find(".type").text("ZeroBlog")
 		else
 			ele.find(".type").remove()
 
@@ -1096,18 +1139,12 @@ class Page extends ZeroFrame {
 			if (res == null)
 				res = {}
 			callback(res)
-			let inner_path_content_json = "data/users/" + page.site_info.auth_address + "/content.json"
 			page.cmd("fileWrite", [inner_path, Text.fileEncode(res)], function (res) {
 				if (res === "ok") {
-					page.cmd("siteSign", {
-						"inner_path": inner_path
-					}, (r) => {
-						page.cmd("sitePublish", {
-							"inner_path": inner_path_content_json,
-							"sign": false
-						}, function () {
-
-						})
+					page.cmd("sitePublish", {
+						"inner_path": "data/users/" + page.site_info.auth_address + "/content.json"
+					}, function (res) {
+						console.log(res)
 					})
 				} else {
 					page.cmd("wrapperNotification", ["error", "File write error: #{res}"])
