@@ -1100,16 +1100,14 @@ class Page extends ZeroFrame {
 			page.cmd("fileWrite", [inner_path, Text.fileEncode(res)], function (res) {
 				if (res === "ok") {
 					page.cmd("siteSign", {
-						"inner_path": inner_path_content_json,
-						privatekey: "stored"
+						"inner_path": inner_path
 					}, (r) => {
-						if (!page.debug)
-							page.cmd("sitePublish", {
-								"inner_path": inner_path_content_json,
-								"sign": false
-							}, function () {
+						page.cmd("sitePublish", {
+							"inner_path": inner_path_content_json,
+							"sign": false
+						}, function () {
 
-							})
+						})
 					})
 				} else {
 					page.cmd("wrapperNotification", ["error", "File write error: #{res}"])
