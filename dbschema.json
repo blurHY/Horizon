@@ -3,6 +3,21 @@
   "db_file": "data/Horizon.db",
   "version": 3,
   "maps": {
+    "data_normal.json": {
+      "to_table": [{
+          "node": "main",
+          "table": "main"
+        },
+        {
+          "node": "phrases",
+          "table": "phrases"
+        },
+        {
+          "node": "keywords",
+          "table": "keywords"
+        }
+      ]
+    },
     "users/.+/data.json": {
       "to_table": [
         "search_zite",
@@ -67,6 +82,70 @@
         "CREATE UNIQUE INDEX key_main_spider ON main_spider(json_id, site_address)"
       ],
       "schema_changed": 3
+    },
+    "main": {
+      "cols": [
+        [
+          "id",
+          "INT"
+        ],
+        [
+          "url",
+          "VARCHAR(700)"
+        ],
+        [
+          "imgcount",
+          "INT"
+        ],
+        [
+          "title",
+          "VARCHAR(90)"
+        ],
+        [
+          "state",
+          "INT"
+        ],
+        [
+          "priority",
+          "INT"
+        ]
+      ],
+      "indexes": [
+        "CREATE UNIQUE INDEX key_main ON main(id)"
+      ],
+      "schema_changed": 1
+    },
+    "keywords": {
+      "cols": [
+        [
+          "pageid",
+          "INT"
+        ],
+        [
+          "keyword",
+          "VARCHAR(150)"
+        ]
+      ],
+      "indexes": [
+        "CREATE UNIQUE INDEX key_keywords ON keywords(pageid)"
+      ],
+      "schema_changed": 1
+    },
+    "phrases": {
+      "cols": [
+        [
+          "pageid",
+          "INT"
+        ],
+        [
+          "phrase",
+          "VARCHAR(250)"
+        ]
+      ],
+      "indexes": [
+        "CREATE UNIQUE INDEX key_phrases ON phrases(pageid)"
+      ],
+      "schema_changed": 1
     }
   }
 }

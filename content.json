@@ -2,22 +2,32 @@
  "address": "1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn",
  "background-color": "white",
  "description": "A search engine",
+ "donate": "By blurHY.\n If you have any idea,please tell me.\nGithub links https://github.com/blurHY/Horizon\n and the spiders https://github.com/blurHY/ZeronetSpider",
+ "favicon": "favicon.gif",
  "files": {
   "LICENSE": {
    "sha512": "4937848b94f5b50ea16c51f9e98fdcd3953aca63d63ca3bb05d8a62c107e382b",
    "size": 35821
   },
   "README.md": {
-   "sha512": "276e0d275435c57b35dd9839509a9ca49e9fdaf88dbae9f2008816dee339b6c5",
-   "size": 36
+   "sha512": "00264e66d4f180ff662ced853e6a5075a261df2a709f5f91d42a26d3c9def6f1",
+   "size": 97
   },
-  "data_normal.json": {
-   "sha512": "1d202ac1034875a5cefd262a800b549d296ccac72658b665642d8a997cc206fe",
-   "size": 9477441
+  "data/data_normal.json.gz": {
+   "sha512": "ae3b9b1c639456ce89dc53c54f9f47aff9a043b68e576f3272ad2db6fe08e1d5",
+   "size": 2630106
+  },
+  "data/users/1JcHMiQxXHX9q3ZK2LF9rZjvg3MUtTpcK/data.json": {
+   "sha512": "a299def1ea566f1c5d4d4920e23414c9eecfd53d58e0437b5c9864510d7ad313",
+   "size": 1388
   },
   "dbschema.json": {
-   "sha512": "bb59770af208d6784368df0cc115c5595e1366beac98de0a41b77013cc24e1d2",
-   "size": 1380
+   "sha512": "11cdd8bb9fb58081235d602f84bc31bb79de957756da63d802c681f7483304b3",
+   "size": 2744
+  },
+  "favicon.gif": {
+   "sha512": "de4f2918a87a45ae30623a96fedebdd92d9258992192870b75de793a80ed0205",
+   "size": 26796
   },
   "font-awesome.css": {
    "sha512": "2412182ea0e6e69c7820a96d2d82751ba57b6e7be91becd3d10853ce58e610e2",
@@ -32,8 +42,8 @@
    "size": 9708
   },
   "horizon.js": {
-   "sha512": "ff03ce629b040dfc0c6bf830a0e292fdd3c0ce5d8ee0e9e69a970a7fccff76f0",
-   "size": 38453
+   "sha512": "5c3e4dad73ccdd1f0dff8eac52fa1ea6d7927d74cf037c49d61349613d1bca6c",
+   "size": 37250
   },
   "index.html": {
    "sha512": "57b363489032fdd39e67fc1650c1be813f3ebd2559c489b8a7f5614a7685101a",
@@ -76,7 +86,7 @@
    "size": 28123
   }
  },
- "ignore": ".idea/.*|.git/.*|.gitignore|data/.*",
+ "ignore": ".idea/.*|.git/.*|.gitignore|data/.*db",
  "includes": {
   "data/users/content.json": {
    "signers": [],
@@ -84,11 +94,11 @@
   }
  },
  "inner_path": "content.json",
- "modified": 1535454302,
+ "modified": 1535611127,
  "postmessage_nonce_security": true,
  "signers_sign": "HNFq/CdaiMuMu4ps0/AJLwlOufHlr4KDB4a32m1ZpscOCpyYMKQbGfQslDMAul4j5+3vGPjmlOxSkgejAgsyk0I=",
  "signs": {
-  "1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn": "G83Q7pDZ9KAcg1Hr55TM6NgE1x13Pk2bNzB7HeDJdXnMImg+c8z1E0KCowIa5lBLNp2k0Yr01Tak1eg+C+U9kVE="
+  "1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn": "G4cRBemPJibSPNfVQcFk0Rwg36D5iJzyqXBh0IR9c7yHThPZKUWqXOmUFeF32Jwib3EaxdDqVW8jyOlRKT8CMNQ="
  },
  "signs_required": 1,
  "title": "Horizon",
