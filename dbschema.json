@@ -1,21 +1,26 @@
 {
   "db_name": "Horizon",
   "db_file": "data/Horizon.db",
-  "version": 3,
+  "version": 2,
   "maps": {
-    "data_normal.json": {
-      "to_table": [{
-          "node": "main",
-          "table": "main"
-        },
-        {
-          "node": "phrases",
-          "table": "phrases"
-        },
-        {
-          "node": "keywords",
-          "table": "keywords"
-        }
+    "data_main[0-9].json": {
+      "to_table": [
+        "main"
+      ]
+    },
+    "data_keywords[0-9].json": {
+      "to_table": [
+        "keywords"
+      ]
+    },
+    "data_phrases[0-9].json": {
+      "to_table": [
+        "phrases"
+      ]
+    },
+    "data_relationship[0-9].json": {
+      "to_table": [
+        "relationship"
       ]
     },
     "users/.+/data.json": {
@@ -108,12 +113,14 @@
         [
           "priority",
           "INT"
-        ]
+        ],
+        ["json_id", "INTEGER REFERENCES json (json_id)"]
       ],
       "indexes": [
+        "CREATE INDEX main_key ON main(json_id)",
         "CREATE UNIQUE INDEX key_main ON main(id)"
       ],
-      "schema_changed": 1
+      "schema_changed": 2
     },
     "keywords": {
       "cols": [
@@ -124,12 +131,14 @@
         [
           "keyword",
           "VARCHAR(150)"
-        ]
+        ],
+        ["json_id", "INTEGER REFERENCES json (json_id)"]
       ],
       "indexes": [
-        "CREATE UNIQUE INDEX key_keywords ON keywords(pageid)"
+        "CREATE INDEX kwkey ON keywords(json_id)",
+        "CREATE UNIQUE INDEX key_kw ON keywords(pageid,keyword)"
       ],
-      "schema_changed": 1
+      "schema_changed": 2
     },
     "phrases": {
       "cols": [
@@ -140,10 +149,30 @@
         [
           "phrase",
           "VARCHAR(250)"
-        ]
+        ],
+        ["json_id", "INTEGER REFERENCES json (json_id)"]
       ],
       "indexes": [
-        "CREATE UNIQUE INDEX key_phrases ON phrases(pageid)"
+        "CREATE INDEX phrkey ON phrases(json_id)",
+        "CREATE UNIQUE INDEX key_phrases ON phrases(pageid,phrase)"
+      ],
+      "schema_changed": 2
+    },
+    "relationship": {
+      "cols": [
+        [
+          "parent",
+          "INT"
+        ],
+        [
+          "sub",
+          "INT"
+        ],
+        ["json_id", "INTEGER REFERENCES json (json_id)"]
+      ],
+      "indexes": [
+        "CREATE INDEX relationship_key ON relationship(json_id)",
+        "CREATE UNIQUE INDEX key_relationship ON relationship(parent,sub)"
       ],
       "schema_changed": 1
     }

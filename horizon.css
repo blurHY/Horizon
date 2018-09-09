@@ -350,9 +350,17 @@ img.logosmall {
 
 .zsinfo,
 .ztinfo,
-.zuinfo{
+.zuinfo,
+.zbinfo{
     font-size: small;
     opacity: 0.5;
+    display: none;
+}
+
+.zbdate{
+    display: inline;
+    margin-left: 10px;
+    color: #7d20f8;
 }
 
 .zsinfo:before {
@@ -368,6 +376,11 @@ img.logosmall {
 .zuinfo:before {
     content: "ZeroUp";
     color: #4c31ff;
+}
+
+.zbinfo:before {
+    content: "ZeroBlog";
+    color: #f1b153;
 }
 
 .ztvote::before {
@@ -405,7 +418,8 @@ span.zspeer:after {
     padding: 10px;
     overflow: hidden;
     max-height: 500px;
-    max-width: 350px
+    max-width: 350px;
+    word-wrap: break-word;
 }
 
 .card * {
@@ -496,6 +510,10 @@ a {
     margin-bottom: 10px;
 }
 
+.visible{
+    display: inline-block!important;
+}
+
 @media screen and ( max-width: 1000px) {
     img.logosmall {
         margin: initial;
@@ -542,6 +560,11 @@ a {
     .settingbtn {
         right: 20px;
         bottom: 15px;
+    }
+
+    .card{
+        align-self: stretch;
+        max-width: none;
     }
 }
 
