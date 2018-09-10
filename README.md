@@ -14,8 +14,3 @@ If you have any idea ,please PR or Issue.
 
 
 The [crawler](https://github.com/blurHY/ZeronetSpider)
-
-Feature
-
-- [ ] Detect Zite type (Blog,Wiki,etc.)
-- [ ] Merge same zite with multi domains
