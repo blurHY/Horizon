@@ -514,6 +514,24 @@ a {
     display: inline-block!important;
 }
 
+.progressbox{
+    position: fixed;
+    left: calc(40% - 50px);
+    top: calc( 50% + 40px );
+    width: 20%;
+    padding: 50px;
+    box-sizing: content-box;
+}
+
+.progressbox.resultstate{
+    box-shadow: 4px 4px 20px #00000040;
+    background: white;
+}
+
+.progressbox > .ui{
+    display: none;
+}
+
 @media screen and ( max-width: 1000px) {
     img.logosmall {
         margin: initial;
@@ -526,6 +544,12 @@ a {
 
     .container-left {
         width: 500px;
+    }
+
+    .progressbox{
+        left: calc(30% - 50px);
+        top: calc( 50% + 40px );
+        width: 40%;
     }
 }
 
@@ -565,6 +589,13 @@ a {
     .card{
         align-self: stretch;
         max-width: none;
+    }
+
+    .progressbox{
+        width: 100%;
+        left: 0;
+        right: 0;
+        box-sizing: border-box;
     }
 }
 
