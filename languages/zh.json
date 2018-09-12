@@ -30,5 +30,10 @@
   "Field should not be empty": "字段不得为空",
   "Plesase wait,searching...": "请等待，正在搜索",
   "Please type fewer keywords.And use whitespace to separate them": "请减少关键字，并用空格分割。",
-  "We use CORS to search in other sites.Please grant it (refresh page first).": "Horizon使用CORS在其他站点中搜索，请点Grant。"
+  "We use CORS to search in other sites.Please grant it (refresh page first).": "Horizon使用CORS在其他站点中搜索，请点Grant。",
+  "Parsing query": "分析提交的字句",
+  "Querying in main database": "查询主数据库",
+  "Collecting more infomation": "搜集更多信息",
+  "Rendering": "生成结果",
+  "Done": "完毕"
 }
