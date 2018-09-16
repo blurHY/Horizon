@@ -36,5 +36,6 @@
   "Collecting more infomation": "搜集更多信息",
   "Rendering": "生成结果",
   "Done": "完毕",
-  "Merged": "合并了"
+  "Merged": "合并了",
+  "If Horzion not works,please report it to github https://github.com/blurHY/Horizon/":"若有疑问、bug，请反馈至 github https://github.com/blurHY/Horizon/"
 }
