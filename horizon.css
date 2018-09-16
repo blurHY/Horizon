@@ -87,7 +87,7 @@ img.logosmall {
     position: fixed;
     margin: 0;
     width: 100%;
-    z-index: 1;
+    z-index: 2;
     height: 100px;
     background: white;
     box-sizing: border-box;
@@ -230,24 +230,31 @@ img.logosmall {
 
 .minfobox {
     position: absolute;
-    width: 200px;
+    width: 40vw;
     height: fit-content;
     top: 300px;
     left: 200px;
     background: white;
     z-index: 1;
-    box-shadow: 0px 3px 13px #00000059;
+    box-shadow: 0.5px 0.5px 1.2px 1px #00000014;
     padding: 10px;
     font-size: small;
     transition: all 0.2s ease;
     word-wrap: break-word;
     word-break: break-all;
+    border-radius: 3px;
 }
 
 .kws,
 .phs,
 .mergedurls {
     opacity: 0.6;
+}
+
+.mergedurls {
+    max-height: 20vw;
+    overflow: scroll;
+    overflow-x: hidden;
 }
 
 .match {
@@ -283,6 +290,14 @@ img.logosmall {
     margin-right: 20px;
 }
 
+.nomoredata{
+    padding: 10px;
+}
+
+a{
+    cursor: pointer;
+}
+
 .right > *,
 .left > * {
     padding: 5px;
@@ -294,7 +309,7 @@ img.logosmall {
 .minfoitem {
     box-shadow: inset 0 0px 10px 1px #00000024;
     padding: 10px;
-    overflow: scroll;
+    overflow: hidden;
     transition: all 0.2s ease;
 }
 
@@ -332,8 +347,9 @@ img.logosmall {
     padding: 25px;
 }
 
-.header {
-    padding: 5px 0;
+.merged > .header {
+    padding: 2px 0;
+    opacity: 0.7;
 }
 
 .type {
@@ -345,19 +361,19 @@ img.logosmall {
     cursor: pointer;
     opacity: 0.6;
     white-space: nowrap;
-    margin: 4px!important;
+    margin: 4px !important;
 }
 
 .zsinfo,
 .ztinfo,
 .zuinfo,
-.zbinfo{
+.zbinfo {
     font-size: small;
     opacity: 0.5;
     display: none;
 }
 
-.zbdate{
+.zbdate {
     display: inline;
     margin-left: 10px;
     color: #7d20f8;
@@ -506,29 +522,29 @@ a {
     margin-left: 5px;
 }
 
-.container-left .card{
+.container-left .card {
     margin-bottom: 10px;
 }
 
-.visible{
-    display: inline-block!important;
+.visible {
+    display: inline-block !important;
 }
 
-.progressbox{
+.progressbox {
     position: fixed;
     left: calc(40% - 50px);
-    top: calc( 50% + 40px );
+    top: calc(50% + 40px);
     width: 20%;
     padding: 50px;
     box-sizing: content-box;
 }
 
-.progressbox.resultstate{
+.progressbox.resultstate {
     box-shadow: 4px 4px 20px #00000040;
     background: white;
 }
 
-.progressbox > .ui{
+.progressbox > .ui {
     display: none;
 }
 
@@ -546,10 +562,16 @@ a {
         width: 500px;
     }
 
-    .progressbox{
+    .progressbox {
         left: calc(30% - 50px);
-        top: calc( 50% + 40px );
+        top: calc(50% + 40px);
         width: 40%;
+    }
+
+    .mergedurls {
+        max-height: 70vw;
+        overflow: scroll;
+        overflow-x: hidden;
     }
 }
 
@@ -586,12 +608,12 @@ a {
         bottom: 15px;
     }
 
-    .card{
+    .card {
         align-self: stretch;
         max-width: none;
     }
 
-    .progressbox{
+    .progressbox {
         width: 100%;
         left: 0;
         right: 0;
