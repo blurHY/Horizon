@@ -85,6 +85,7 @@ fabric.properties
 
 
 
-data/*
+data/users/*
+data/*.db
 
 .idea/*
