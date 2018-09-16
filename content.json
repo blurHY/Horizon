@@ -98,16 +98,16 @@
    "size": 165548
   },
   "horizon.css": {
-   "sha512": "16c0acd573df6df350cbef2d31c867f65dfcb68b7dbfe4bf50e2e9f31fd886c3",
-   "size": 10939
+   "sha512": "31d13d0508702ba8f169508326d48f62c899ac58dee9fe106b25ccbe31b0d04d",
+   "size": 10996
   },
   "horizon.js": {
-   "sha512": "a79e766f66c3041ab4e4bb903c5809be1f84cb492c804ab2e99b87683fd75f04",
-   "size": 36396
+   "sha512": "2707ba045359b274783faa1498de204354d395bd62bfd8dfef7c63b9d4ebf877",
+   "size": 37750
   },
   "index.html": {
-   "sha512": "f87316065b4bc45b351a965a48c8cfc464005f1a5b4279edfc28c91bdf2466de",
-   "size": 9748
+   "sha512": "cb8513493ebd6277ba1ad584582336478976346434e06e71d6f40daf814b88a5",
+   "size": 9803
   },
   "jquery-3.3.1.js": {
    "sha512": "e525248b09a6fb4022244682892e67bbf64a3e875eb889db43b0a24ab4a75077",
@@ -148,6 +148,10 @@
   "themes/default/assets/images/flags.png": {
    "sha512": "5470424a23d61248974ae1886e6e38e78685b7957b05445b1c12b9ca355faa81",
    "size": 28123
+  },
+  "wordcloud.js": {
+   "sha512": "18985121cb37ad3add232d8eb14c8d0726075811fc2b312157b263b99e193c1d",
+   "size": 34468
   }
  },
  "ignore": ".idea/.*|.git/.*|.gitignore|data/.*db",
@@ -158,11 +162,11 @@
   }
  },
  "inner_path": "content.json",
- "modified": 1537089287,
+ "modified": 1537098076,
  "postmessage_nonce_security": true,
  "signers_sign": "HNFq/CdaiMuMu4ps0/AJLwlOufHlr4KDB4a32m1ZpscOCpyYMKQbGfQslDMAul4j5+3vGPjmlOxSkgejAgsyk0I=",
  "signs": {
-  "1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn": "HMGuqOGH1UkXCWogQCFVaLgRTUp18kWHn41DahkduTvgNxnSZuu9a0fQbSZedYqEmUHH9qluABZv/QLM3MSWbzs="
+  "1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn": "G628yt0D376p8b+VkvI6nBD+jD35Ijneo8Er5sTgwO8oP0vDeUjmsZnjYwFKd/M7PIofPObFJBVbBzNf8o/pXmg="
  },
  "signs_required": 1,
  "title": "Horizon",

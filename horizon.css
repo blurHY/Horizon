@@ -290,11 +290,16 @@ img.logosmall {
     margin-right: 20px;
 }
 
-.nomoredata{
+canvas {
+    min-width: 100%;
+    width: 100%;
+}
+
+.nomoredata {
     padding: 10px;
 }
 
-a{
+a {
     cursor: pointer;
 }
 
