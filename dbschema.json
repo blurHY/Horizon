@@ -23,6 +23,11 @@
         "relationship"
       ]
     },
+    "data_zites[0-9].json": {
+      "to_table": [
+        "zites"
+      ]
+    },
     "users/.+/data.json": {
       "to_table": [
         "search_zite",
@@ -92,7 +97,7 @@
       "cols": [
         [
           "id",
-          "INT"
+          "UNSIGNED INT"
         ],
         [
           "url",
@@ -100,7 +105,7 @@
         ],
         [
           "imgcount",
-          "INT"
+          "UNSIGNED INT"
         ],
         [
           "title",
@@ -108,13 +113,16 @@
         ],
         [
           "state",
-          "INT"
+          "UNSIGNED INT"
         ],
         [
           "priority",
-          "INT"
+          "UNSIGNED INT"
         ],
-        ["json_id", "INTEGER REFERENCES json (json_id)"]
+        [
+          "json_id",
+          "INTEGER REFERENCES json (json_id)"
+        ]
       ],
       "indexes": [
         "CREATE INDEX main_key ON main(json_id)",
@@ -126,13 +134,16 @@
       "cols": [
         [
           "pageid",
-          "INT"
+          "UNSIGNED INT"
         ],
         [
           "keyword",
           "VARCHAR(150)"
         ],
-        ["json_id", "INTEGER REFERENCES json (json_id)"]
+        [
+          "json_id",
+          "INTEGER REFERENCES json (json_id)"
+        ]
       ],
       "indexes": [
         "CREATE INDEX kwkey ON keywords(json_id)",
@@ -144,13 +155,16 @@
       "cols": [
         [
           "pageid",
-          "INT"
+          "UNSIGNED INT"
         ],
         [
           "phrase",
           "VARCHAR(250)"
         ],
-        ["json_id", "INTEGER REFERENCES json (json_id)"]
+        [
+          "json_id",
+          "INTEGER REFERENCES json (json_id)"
+        ]
       ],
       "indexes": [
         "CREATE INDEX phrkey ON phrases(json_id)",
@@ -162,17 +176,101 @@
       "cols": [
         [
           "parent",
-          "INT"
+          "UNSIGNED INT"
         ],
         [
           "sub",
-          "INT"
+          "UNSIGNED INT"
         ],
-        ["json_id", "INTEGER REFERENCES json (json_id)"]
+        [
+          "json_id",
+          "INTEGER REFERENCES json (json_id)"
+        ]
       ],
       "indexes": [
         "CREATE INDEX relationship_key ON relationship(json_id)",
         "CREATE UNIQUE INDEX key_relationship ON relationship(parent,sub)"
+      ],
+      "schema_changed": 1
+    },
+    "zites": {
+      "cols": [
+        [
+          "ziteid",
+          "UNSIGNED INT"
+        ],
+        [
+          "desciption",
+          "VARCHAR(2000)"
+        ],
+        [
+          "clone_from",
+          "VARCHAR(80)"
+        ],
+        [
+          "modified",
+          "UNSIGNED INT(10)"
+        ],
+        [
+          "title",
+          "VARCHAR(1000)"
+        ],
+        [
+          "includes",
+          "UNSIGNED TINYINT(3)"
+        ],
+        [
+          "files",
+          "UNSIGNED INT(10)"
+        ],
+        [
+          "files_optional",
+          "UNSIGNED INT(10)"
+        ],
+        [
+          "peers",
+          "UNSIGNED SMALLINT(5)"
+        ],
+        [
+          "size",
+          "UNSIGNED BIGINT(20)"
+        ],
+        [
+          "size_optional",
+          "UNSIGNED BIGINT(20)"
+        ],
+        [
+          "domain",
+          "VARCHAR(100)"
+        ],
+        [
+          "translation",
+          "UNSIGNED TINYINT(3)"
+        ],
+        [
+          "content_updated",
+          "UNSIGNED FLOAT(15,5)"
+        ],
+        [
+          "feed",
+          "UNSIGNED TINYINT(3)"
+        ],
+        [
+          "address",
+          "VARCHAR(80)"
+        ],
+        [
+          "zn_version",
+          "VARCHAR(15)"
+        ],
+        [
+          "json_id",
+          "INTEGER REFERENCES json (json_id)"
+        ]
+      ],
+      "indexes": [
+        "CREATE INDEX zites_key ON zites(json_id)",
+        "CREATE UNIQUE INDEX key_zites ON zites(ziteid)"
       ],
       "schema_changed": 1
     }
