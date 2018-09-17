@@ -102,8 +102,8 @@
    "size": 10996
   },
   "horizon.js": {
-   "sha512": "193e837cdf4423b7ab9228bf8aa1b6d52c852dd78d7cddf6214e30b71f3f4075",
-   "size": 38052
+   "sha512": "c7e9506e2b289748373a8d8555c60c66abdfe03ff4fc99c42b7c0d7b62c08a25",
+   "size": 38578
   },
   "index.html": {
    "sha512": "cb8513493ebd6277ba1ad584582336478976346434e06e71d6f40daf814b88a5",
@@ -162,11 +162,11 @@
   }
  },
  "inner_path": "content.json",
- "modified": 1537101880,
+ "modified": 1537176906,
  "postmessage_nonce_security": true,
  "signers_sign": "HNFq/CdaiMuMu4ps0/AJLwlOufHlr4KDB4a32m1ZpscOCpyYMKQbGfQslDMAul4j5+3vGPjmlOxSkgejAgsyk0I=",
  "signs": {
-  "1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn": "G3F2kOBx8r5EujUkR8Oa/VasQbjKpkCm85HqPdqNi/D1djQTA3PlJ172gYR+YV28RAKO6pa+TB2HmhtJCHvphMU="
+  "1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn": "G5F4jn3RH2K5vUBeBvp61aJLiBGtysh0VcFRn2m/G+GcBkcotQdj4c6g3Amtnbm9KKCCqs3hegkXG0wmbYtDDts="
  },
  "signs_required": 1,
  "title": "Horizon",
