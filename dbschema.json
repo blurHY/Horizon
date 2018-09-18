@@ -65,9 +65,9 @@
         ]
       ],
       "indexes": [
-        "CREATE UNIQUE INDEX key_search_zite ON search_zite(json_id, site_address)"
+
       ],
-      "schema_changed": 4
+      "schema_changed": 5
     },
     "main_spider": {
       "cols": [
@@ -89,9 +89,9 @@
         ]
       ],
       "indexes": [
-        "CREATE UNIQUE INDEX key_main_spider ON main_spider(json_id, site_address)"
+
       ],
-      "schema_changed": 3
+      "schema_changed": 4
     },
     "main": {
       "cols": [
@@ -125,10 +125,9 @@
         ]
       ],
       "indexes": [
-        "CREATE INDEX main_key ON main(json_id)",
-        "CREATE UNIQUE INDEX key_main ON main(id)"
+
       ],
-      "schema_changed": 2
+      "schema_changed": 3
     },
     "keywords": {
       "cols": [
@@ -146,10 +145,9 @@
         ]
       ],
       "indexes": [
-        "CREATE INDEX kwkey ON keywords(json_id)",
-        "CREATE UNIQUE INDEX key_kw ON keywords(pageid,keyword)"
+
       ],
-      "schema_changed": 2
+      "schema_changed": 3
     },
     "phrases": {
       "cols": [
@@ -167,10 +165,9 @@
         ]
       ],
       "indexes": [
-        "CREATE INDEX phrkey ON phrases(json_id)",
-        "CREATE UNIQUE INDEX key_phrases ON phrases(pageid,phrase)"
+
       ],
-      "schema_changed": 2
+      "schema_changed": 3
     },
     "relationship": {
       "cols": [
@@ -188,10 +185,9 @@
         ]
       ],
       "indexes": [
-        "CREATE INDEX relationship_key ON relationship(json_id)",
-        "CREATE UNIQUE INDEX key_relationship ON relationship(parent,sub)"
+
       ],
-      "schema_changed": 1
+      "schema_changed": 2
     },
     "zites": {
       "cols": [
@@ -269,10 +265,9 @@
         ]
       ],
       "indexes": [
-        "CREATE INDEX zites_key ON zites(json_id)",
-        "CREATE UNIQUE INDEX key_zites ON zites(ziteid)"
+
       ],
-      "schema_changed": 1
+      "schema_changed": 2
     }
   }
 }

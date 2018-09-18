@@ -37,5 +37,9 @@
   "Rendering": "生成结果",
   "Done": "完毕",
   "Merged": "合并了",
-  "If Horzion not works,please report it to github https://github.com/blurHY/Horizon/":"若有疑问、bug，请反馈至 github https://github.com/blurHY/Horizon/"
+  "If Horzion not works,please report it to github https://github.com/blurHY/Horizon/": "若有疑问、bug，请反馈至 github https://github.com/blurHY/Horizon/",
+  "You are not using the lastest version of Horizon.": "你在使用旧版本Horizon",
+  "Check update": "检查更新",
+  "Site update not works.You could download from github then replace Horizon. (Zeronet/data/1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn)": "更新好像没什么效果，你可以在github上下载然后替换本站。 (Zeronet/data/1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn)",
+  "Go": "跳转"
 }
