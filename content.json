@@ -69,6 +69,10 @@
    "sha512": "dc563f8853bab37637aa797efac2582cc6eae8bffb49781ccc12decc25eee003",
    "size": 303130
   },
+  "data/names-2018-9.json": {
+   "sha512": "faa3944ee3e1365d8d4b563efce9f29576e7f3b0f8bb5bc4f1e0867a25ea5fc1",
+   "size": 308601
+  },
   "data/users/1CvjHaj47ZxuXD1N8wLciYctgbnzGxARVN/data.json": {
    "sha512": "7d6cb5c2a867dce46c671e1b8a587d496fc9e35c5a9ca95fb33360566ef13a01",
    "size": 341
@@ -102,8 +106,8 @@
    "size": 10996
   },
   "horizon.js": {
-   "sha512": "dd091a358e45a56b990b645d24a87f18ebd1aba46893ac12f6c9379907a992b7",
-   "size": 39634
+   "sha512": "ad48564ea8ba4fcbc903aff730ff54753e1b2b3d8f32b6dfd32846a668c5e44a",
+   "size": 41342
   },
   "index.html": {
    "sha512": "cb8513493ebd6277ba1ad584582336478976346434e06e71d6f40daf814b88a5",
@@ -118,8 +122,8 @@
    "size": 3370
   },
   "languages/zh.json": {
-   "sha512": "0b22d37b6d5544f202d87632b5c4ce00c80fd8763d2a41cccd261f64b841285e",
-   "size": 2236
+   "sha512": "b6b978e39c4f15cb3861f0c89082e83958c8ea2fe7191def3c9df2b950ab9233",
+   "size": 2341
   },
   "logo.png": {
    "sha512": "8afd02179b7b7a3cf5ff1e376cce70e8a297ac447661ee71ad5c1b89c0c6acd2",
@@ -162,11 +166,11 @@
   }
  },
  "inner_path": "content.json",
- "modified": 1537270549,
+ "modified": 1537438695,
  "postmessage_nonce_security": true,
  "signers_sign": "HNFq/CdaiMuMu4ps0/AJLwlOufHlr4KDB4a32m1ZpscOCpyYMKQbGfQslDMAul4j5+3vGPjmlOxSkgejAgsyk0I=",
  "signs": {
-  "1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn": "G8NI8vp+3kpgYYzDJ6aO+4swSnmu1gkjQ2xydufVVIN2bVyfcy56uPlM0YoV8t+cSXnhGcTiAUhuKb3L8iO+xJQ="
+  "1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn": "HACquX02KQLxufw8hib0cqogzAJVmtlTVVpVqI/N7BD8PW+geC985qVF8L9lzfv3F63pARnGGnDaQVNPMiA1GMU="
  },
  "signs_required": 1,
  "title": "Horizon",
