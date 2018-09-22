@@ -44,5 +44,11 @@
   "Go": "跳转",
   "Search CORS": "跨域搜索",
   "Merge items": "合并数据",
-  "Item merged": "数据已合并"
+  "Item merged": "数据已合并",
+  "Loading": "加载中",
+  "WordCloud": "文字云",
+  "Last Modified": "最后修改于",
+  "Unknown": "未知",
+  "The time when this data crawled.": "抓取此数据的时间",
+  "Last Updated": "最后更新于"
 }

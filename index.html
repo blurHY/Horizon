@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="font-awesome.css">
 </head>
 
-<body>
+<body lang="en_US">
 <div class="centercontainer defaultpage page">
     <div class="center">
         <img src="logo.svg" class="logo" onerror="this.src='logo.png'">
@@ -50,17 +50,36 @@
         </div>
     </div>
     <div class="minfobox hide ui two column stackable grid">
-        <div class="graphs column">
-            <div class="relationships">
+        <div class="leftcol column">
+            <!--<div class="relationships">-->
+            <!--<canvas>-->
 
-            </div>
+            <!--</canvas>-->
+            <!--</div>-->
             <div class="wordcloud">
                 <canvas>
 
                 </canvas>
             </div>
+            <table class="ui celled definition table ziteinfo">
+                <tbody>
+                <tr>
+                    <td>Loading</td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="times">
+                <div class="ui label lmodified">
+                    <div>Last Modified</div>
+                    <div class="detail">Unknown</div>
+                </div>
+                <div class="ui label lupdate">
+                    <div title="The time when this data crawled.">Last Updated</div>
+                    <div class="detail">Unknown</div>
+                </div>
+            </div>
         </div>
-        <div class="merged column">
+        <div class="rightcol column">
             <div class="header">
                 <sapn>Merged</sapn>
                 <span class="mergedrowc"></span>
@@ -68,6 +87,20 @@
             </div>
             <div class="mergedurls ui list mini">
 
+            </div>
+            <div class="asProgress">
+                <div class="ui olive  progress peernum">
+                    <div class="bar">
+                        <div class="progress"></div>
+                    </div>
+                    <div class="label"></div>
+                </div>
+                <div class="ui indicating progress znversion">
+                    <div class="bar">
+                        <div class="progress"></div>
+                    </div>
+                    <div class="label"></div>
+                </div>
             </div>
         </div>
         <div class="nomoredata">No more data</div>
