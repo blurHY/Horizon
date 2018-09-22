@@ -831,7 +831,7 @@ class Page extends ZeroFrame {
 	setSiteRootData(items) {
 		for (let i = 0; i < items.length; i++) {
 			items[i].siteroot = getSiteRootUrl(items[i].url)
-			items[i].siteroot_addr = /^[A-z0-9a-z]*$/.test(items[i].siteroot) ? items[i].siteroot : this.zeronames[items[i].siteroot]
+			items[i].siteroot_addr = /^[A-z0-9a-z]+$/.test(items[i].siteroot) ? items[i].siteroot : this.zeronames[items[i].siteroot.toLowerCase()]
 		}
 	}
 
@@ -1112,6 +1112,8 @@ class Page extends ZeroFrame {
 				})
 				mitem.find(".column").show()
 			}
+			else
+				mitem.find(".nomoredata").show()
 		}
 	}
 
@@ -1369,7 +1371,7 @@ class Page extends ZeroFrame {
 		let names = Object.getOwnPropertyNames(this.zeronames)
 		let domains = []
 		for (let i = 0; i < names.length; i++)
-			if (site_addr.indexOf(this.zeronames[names[i]]) >= 0)
+			if (site_addr.indexOf(this.zeronames[names[i].toLowerCase()]) >= 0)
 				domains.push(names[i])
 		return domains
 	}
