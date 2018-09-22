@@ -9,6 +9,8 @@ const filterblank = x => x.trim() !== ""
 
 timeagoinstance = timeago()
 
+LoadAllDataOnce = true // Don't set this to false.
+
 function zn_version_to_deci(str) {
 	return str.replace(/([0-9]+)(.*)/g, (a, b, c) => b + "." + c.replace(/\./g, ""))
 }
@@ -422,6 +424,7 @@ class Page extends ZeroFrame {
 		showProgress(10, "Parsing query")
 		this.timeDurations = []
 		this.searchQuery = text.trim()
+		this.mergeItems_addData_done = false
 		this.parseQuery()
 
 		function allSearched() {
@@ -436,11 +439,14 @@ class Page extends ZeroFrame {
 			function final() {
 				if (donecount < 2)
 					return
-				page.displayCards()
-				page.displayItems()
-				let time = (Date.now() - lastnow) / 1000
-				showProgress(100, "Done")
-				page.showStat(page.searchResult_count, time)
+				page.getZiteDataOfItems(() => {
+					page.finalSort()
+					page.displayCards()
+					page.displayItems()
+					let time = (Date.now() - lastnow) / 1000
+					showProgress(100, "Done")
+					page.showStat(page.searchResult_count, time)
+				})
 			}
 
 			page.mergeItems_addData(page.searchResult, true, () => {
@@ -473,6 +479,11 @@ class Page extends ZeroFrame {
 					allSearched()
 				})
 		})
+	}
+
+	finalSort() {
+		let halfMaxPeers = maxPeers * 0.4
+		this.searchResult.sort((a, b) => ((b.ziteObj.dbres ? b.ziteObj.dbres.peers : 0) + b.itemrank / this.maxItemRank * halfMaxPeers) - ((a.ziteObj.dbres ? a.ziteObj.dbres.peers : 0) + b.itemrank / this.maxItemRank * halfMaxPeers))
 	}
 
 	processWikiRes(res, siteAddr) {
@@ -568,6 +579,7 @@ class Page extends ZeroFrame {
 		this.cmd("dbQuery", [query], (res) => {
 			this.recordDuration("mainQuery", Date.now() - last)
 			this.searchResult = []
+			this.maxItemRank = this.searchResult[0] ? this.searchResult[0].itemrank : 0
 			this.searchResult = this.searchResult.concat(res)
 			cb()
 		})
@@ -795,39 +807,6 @@ class Page extends ZeroFrame {
 		this.showOnePage()
 	}
 
-	afterShowOnePage() {
-		this.queryZitesData(() => {
-			this.showAdditionalData()
-		})
-	}
-
-	showAdditionalData() { // add the data to exists elements
-		$(".container-left > .item:not(.template)").each(() => {
-
-		})
-	}
-
-	queryZitesData(cb) {
-		function f(addr) {
-			page.cmd("dbQuery", [`Select * from zites where address="${escapeSql(addr)}"`], res => {
-				if (index >= addrs.length) {
-					cb()
-					return
-				}
-				try {
-					page.needToQuery_zites_obj[addrs[index]].dbres = res[0]
-				}
-				catch {
-				}
-				f(addrs[++index])
-			})
-		}
-
-		let addrs = Array.from(this.needToQuery_zites)
-		let index = 0
-		f()
-	}
-
 	setSiteRootData(items) {
 		for (let i = 0; i < items.length; i++) {
 			items[i].siteroot = getSiteRootUrl(items[i].url)
@@ -852,32 +831,72 @@ class Page extends ZeroFrame {
 				cb()
 			return
 		}
-		let func = () => {
-			for (let i = (!firstPage ? page.lastIndex_mergeItems_addData : 0); i < items.length; i++) {
-				if (firstPage)
-					if (this.needToQuery_zites.size >= 100) {
-						page.lastIndex_mergeItems_addData = i
-						for (let j = i; j < items.length; j++) {
-							if (page.needToQuery_zites.has(items[i].siteroot_addr)) { // Retain the first one
-								items.splice(j, 1)
-								j--
+		if (!LoadAllDataOnce) {
+			let func = () => {
+				for (let i = (!firstPage ? page.lastIndex_mergeItems_addData : 0); i < items.length; i++) {
+					if (firstPage)
+						if (this.needToQuery_zites.size >= 100) {
+							page.lastIndex_mergeItems_addData = i
+							for (let j = i; j < items.length; j++) {
+								if (page.needToQuery_zites.has(items[i].siteroot_addr)) { // Retain the first one
+									items.splice(j, 1)
+									j--
+								}
 							}
+							if (cb)
+								cb()
+							return
 						}
-						if (cb)
-							cb()
-						return
+					if (!items[i])
+						continue
+					switch (this.getItemType(items[i])) {
+						case "normal":
+							let siteroot = items[i].siteroot_addr
+							let del = false
+							if (!this.needToQuery_zites_obj[siteroot])
+								this.needToQuery_zites_obj[siteroot] = []
+							if (this.needToQuery_zites.has(siteroot)) // Retain the first one
+								del = true
+							else {
+								this.needToQuery_zites.add(siteroot)
+								items[i].ziteObj = this.needToQuery_zites_obj[siteroot]
+							}
+							this.needToQuery_zites_obj[siteroot].push(items[i])
+							if (del) {
+								items.splice(i, 1)
+								i--
+							}
 					}
+				}
+				if (!firstPage) {
+					showProgress(100, "Item merged")
+				}
+				if (cb)
+					cb()
+			}
+			if (!firstPage) {
+				page.mergeItems_addData_done = true
+				showProgress(60, "Merge items")
+				setTimeout(func, 100)
+			} else func()
+		}
+		else {
+			page.mergeItems_addData_done = true
+			for (let i = 0; i < items.length; i++) {
 				if (!items[i])
 					continue
 				switch (this.getItemType(items[i])) {
 					case "normal":
 						let siteroot = items[i].siteroot_addr
 						let del = false
-						if (this.needToQuery_zites.has(siteroot)) // Retain the first one
-							del = true
-						else this.needToQuery_zites.add(siteroot)
 						if (!this.needToQuery_zites_obj[siteroot])
 							this.needToQuery_zites_obj[siteroot] = []
+						if (this.needToQuery_zites.has(siteroot)) // Retain the first one
+							del = true
+						else {
+							this.needToQuery_zites.add(siteroot)
+							items[i].ziteObj = this.needToQuery_zites_obj[siteroot]
+						}
 						this.needToQuery_zites_obj[siteroot].push(items[i])
 						if (del) {
 							items.splice(i, 1)
@@ -885,17 +904,27 @@ class Page extends ZeroFrame {
 						}
 				}
 			}
-			if (!firstPage) {
-				showProgress(100, "Item merged")
-			}
 			if (cb)
 				cb()
 		}
-		if (!firstPage) {
-			page.mergeItems_addData_done = true
-			showProgress(60, "Merge items")
-			setTimeout(func, 100)
-		} else func()
+	}
+
+	getZiteDataOfItems(cb) {
+		let remain = this.needToQuery_zites.size
+		if (remain === 0) {
+			if (cb)
+				cb()
+			return
+		}
+		this.needToQuery_zites.forEach(x => {
+			this.cmd("dbQuery", [`select * from zites where address="${x}"`], res => {
+				remain--
+				this.needToQuery_zites_obj[x].dbres = res[0]
+				if (remain === 0)
+					if (cb)
+						cb()
+			})
+		})
 	}
 
 	getItemType(i) {
@@ -951,17 +980,18 @@ class Page extends ZeroFrame {
 				cot.append(item)
 			}
 			$(".minfo").click(this.showMoreInfo)
-			setTimeout(() => {
-				this.afterShowOnePage()
-			}, 200)
 		}
 		if (this.pagenum > 0) {
 			$("div.stat").hide()
 			page.clearCards()
-			page.mergeItems_addData(this.searchResult, false, () => {
-				setTimeout(() => this.resetProgress(), 100)
+			if (!LoadAllDataOnce)
+				page.mergeItems_addData(this.searchResult, false, () => {
+					setTimeout(() => this.resetProgress(), 100)
+					func()
+				})
+			else {
 				func()
-			})
+			}
 		}
 		else func()
 	}
@@ -1039,8 +1069,9 @@ class Page extends ZeroFrame {
 					ele.find(".link").text(href).data("href", href).attr("href", href)
 					mergedurls.append(ele)
 				}
-				let zitei = mitem.find(".ziteinfo>tbody")
-				page.getZiteInfo(siteaddr, ziteires => {
+				let zitei = mitem.find(".ziteinfo>tbody");
+				// page.getZiteInfo(siteaddr, ziteires => {
+				(ziteires => {
 					zitei.empty()
 
 					function addRow(head, data) {
@@ -1063,8 +1094,10 @@ class Page extends ZeroFrame {
 					mitem.find(".lmodified .detail").text(timeagoinstance.format(thmodif)).attr("title", new Date(thmodif))
 
 					let thlaupd = ziteires.content_updated * 1000
-
-					mitem.find(".lupdate .detail").text(timeagoinstance.format(thlaupd)).attr("title", new Date(thlaupd))
+					if (thlaupd > 0)
+						mitem.find(".lupdate .detail").text(timeagoinstance.format(thlaupd)).attr("title", new Date(thlaupd))
+					else
+						mitem.find(".lupdate").hide()
 
 					$(".peernum").progress({
 						value: ziteires.peers,
@@ -1081,7 +1114,7 @@ class Page extends ZeroFrame {
 						label: "ratio",
 						text: {ratio: "{value}", active: "Zeronet Version"}
 					})
-				})
+				})(page.needToQuery_zites_obj[siteaddr].dbres)
 				let wordc = mitem.find(".wordcloud")
 				wordc.show()
 				wordc.empty().append("<canvas></canvas>")
