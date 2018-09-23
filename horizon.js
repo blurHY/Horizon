@@ -83,36 +83,6 @@ function beatifyUrl(link) {
 class Page extends ZeroFrame {
 	setSiteInfo(site_info) {
 		this.site_info = site_info
-		if (!this.github_content_json) {
-			try {
-				this.github_content_json = JSON.parse($.ajax({
-					url: "https://raw.githubusercontent.com/blurHY/Horizon/master/content.json",
-					async: false
-				}).responseText)
-			} catch {
-
-			}
-		}
-		if (this.github_content_json) {
-			if (site_info.content.modified < this.github_content_json.modified) {
-				if (!page.update_tried)
-					page.cmd("wrapperConfirm", ["You are not using the lastest version of Horizon.", "Check update"], res => {
-						if (res === 1) {
-							page.update_tried = true
-							page.cmd("siteUpdate", ["1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn"], () => {
-							})
-						}
-					})
-				else {
-					page.update_tried = false
-					page.cmd("wrapperConfirm", ["Site update not works.You could download from github then replace Horizon. (Zeronet/data/1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn)", "Go"], res => {
-						if (res === 1) {
-							page.cmd("wrapperOpenWindow", "https://github.com/blurHY/Horizon")
-						}
-					})
-				}
-			}
-		}
 	}
 
 	init() {
@@ -123,6 +93,61 @@ class Page extends ZeroFrame {
 		this.corszitesForQuery = []
 		this.timeDurations = []
 		this.siteIdAndData = {}
+	}
+
+	checkServerVersion() {
+		if (this.serverInfo.rev < 3582) {
+			this.cmd("wrapperNotification", ["error", "Please update your zeronet client.Horizon won't works below rev3582"])
+		}
+	}
+
+	checkFileExist(list, time = 0) {
+		let kw = list.filter(a => a.startsWith("data_keywords")).length
+		let ph = list.filter(a => a.startsWith("data_phrases")).length
+		let ma = list.filter(a => a.startsWith("data_main")).length
+
+		let kw_ = page.fileNames.filter(a => a.startsWith("data/data_keywords")).length
+		let ph_ = page.fileNames.filter(a => a.startsWith("data/data_phrases")).length
+		let ma_ = page.fileNames.filter(a => a.startsWith("data/data_main")).length
+
+		if (kw < kw_ || ph < ph_ || ma < ma_) {
+			if (!page.fileNotArrived)
+				page.cmd("wrapperNotification", ["info", "Some files are not downloaded yet.You should wait for them."])
+			page.fileNotArrived = true
+			setTimeout(() => {
+				page.checkFileExist(list, time + 1)
+			}, 6000)
+		}
+		else {
+			page.fileNotArrived = false
+			setTimeout(page.checkDataBase, 3000)
+		}
+	}
+
+	checkDataBase() {
+		page.cmd("dbQuery", ["select count(*) as val from main"], res => {
+			if (res[0].val === 0) {
+				page.cmd("wrapperNotification", ["info", "Maybe there is something wrong in your zeronet client.Please check the logs."])
+			}
+			else if (res[0].val < 100000) {
+				page.cmd("wrapperNotification", ["info", "Database is still importing.So it will be slow to search now."])
+			}
+		})
+	}
+
+	getContentJson(cb) {
+		this.cmd("fileGet", ["content.json"], res => {
+			try {
+				this.contentJson = JSON.parse(res)
+				this.files = this.contentJson.files
+				this.fileNames = Object.getOwnPropertyNames(this.contentJson.files)
+				if (cb)
+					cb()
+			}
+			catch (e) {
+				showError("Content json is broken")
+			}
+		})
 	}
 
 	onOpenWebsocket() {
@@ -164,6 +189,17 @@ class Page extends ZeroFrame {
 			if (ev.key === "Enter" && $(this).val().trim() !== "") {
 				page.Search(this.value)
 			}
+		})
+
+		this.cmd("serverInfo", [], res => {
+			this.serverInfo = res
+			this.checkServerVersion()
+		})
+
+		this.cmd("fileList", ["data"], res => {
+			this.getContentJson(() => {
+				this.checkFileExist(res)
+			})
 		})
 	}
 
@@ -1081,7 +1117,7 @@ class Page extends ZeroFrame {
 						zitei.append(tr)
 					}
 
-					if(!ziteires){
+					if (!ziteires) {
 						addRow("This zite is not crawled")
 						$(".peernum").remove()
 						$(".znversion").remove()
@@ -1122,7 +1158,6 @@ class Page extends ZeroFrame {
 						text: {ratio: "{value}", active: "Zeronet Version"}
 					})
 				})(page.needToQuery_zites_obj[siteaddr].dbres)
-
 
 
 				let wordc = mitem.find(".wordcloud")

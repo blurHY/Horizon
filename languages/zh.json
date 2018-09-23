@@ -51,5 +51,8 @@
   "Unknown": "未知",
   "The time when this data crawled.": "抓取此数据的时间",
   "Last Updated": "最后更新于",
-  "This zite is not crawled": "该站点尚未爬取"
+  "This zite is not crawled": "该站点尚未爬取",
+  "Please update your zeronet client.Horizon won't works below rev3582": "请更新零网客户端，Horizon在版本低于3582的情况下无法工作。",
+  "Content json is broken": "content.json文件已损坏",
+  "Some files are not downloaded yet.You should wait for them.": "文件尚未下载完成，请等待。"
 }
