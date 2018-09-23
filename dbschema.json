@@ -38,6 +38,16 @@
       "to_keyvalue": [
         "cert_user_id"
       ]
+    },
+    "names.*json": {
+      "to_table": [
+        {
+          "node": "names",
+          "table": "names",
+          "key_col": "domain",
+          "val_col": "address"
+        }
+      ]
     }
   },
   "tables": {
@@ -65,7 +75,6 @@
         ]
       ],
       "indexes": [
-
       ],
       "schema_changed": 5
     },
@@ -89,7 +98,6 @@
         ]
       ],
       "indexes": [
-
       ],
       "schema_changed": 4
     },
@@ -125,7 +133,6 @@
         ]
       ],
       "indexes": [
-
       ],
       "schema_changed": 3
     },
@@ -145,7 +152,6 @@
         ]
       ],
       "indexes": [
-
       ],
       "schema_changed": 3
     },
@@ -165,7 +171,6 @@
         ]
       ],
       "indexes": [
-
       ],
       "schema_changed": 3
     },
@@ -185,7 +190,6 @@
         ]
       ],
       "indexes": [
-
       ],
       "schema_changed": 2
     },
@@ -265,9 +269,27 @@
         ]
       ],
       "indexes": [
-
       ],
       "schema_changed": 2
+    },
+    "names": {
+      "cols": [
+        [
+          "domain",
+          "varchar(100)"
+        ],
+        [
+          "address",
+          "varchar(80)"
+        ],
+        [
+          "json_id",
+          "INTEGER REFERENCES json (json_id)"
+        ]
+      ],
+      "indexes": [
+      ],
+      "schema_changed": 1
     }
   }
 }
