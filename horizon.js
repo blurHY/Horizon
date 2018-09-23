@@ -677,7 +677,7 @@ class Page extends ZeroFrame {
 		ele.find(".link").html(this.highlightedText(link))
 		ele.data("id", id)
 
-		if (imgc > 0) {
+		if (imgc <= 0) {
 			ele.find("span.imgc").remove()
 			ele.find("span.imgcc").remove()
 		} else ele.find("span.imgcc").text(imgc)
@@ -1070,7 +1070,7 @@ class Page extends ZeroFrame {
 					mergedurls.append(ele)
 				}
 				let zitei = mitem.find(".ziteinfo>tbody");
-				// page.getZiteInfo(siteaddr, ziteires => {
+
 				(ziteires => {
 					zitei.empty()
 
@@ -1079,6 +1079,13 @@ class Page extends ZeroFrame {
 						tr.append($("<td></td>").text(head))
 						tr.append($("<td></td>").text(data))
 						zitei.append(tr)
+					}
+
+					if(!ziteires){
+						addRow("This zite is not crawled")
+						$(".peernum").remove()
+						$(".znversion").remove()
+						return
 					}
 
 					addRow("address", ziteires.address)
@@ -1115,6 +1122,9 @@ class Page extends ZeroFrame {
 						text: {ratio: "{value}", active: "Zeronet Version"}
 					})
 				})(page.needToQuery_zites_obj[siteaddr].dbres)
+
+
+
 				let wordc = mitem.find(".wordcloud")
 				wordc.show()
 				wordc.empty().append("<canvas></canvas>")

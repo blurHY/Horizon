@@ -50,5 +50,6 @@
   "Last Modified": "最后修改于",
   "Unknown": "未知",
   "The time when this data crawled.": "抓取此数据的时间",
-  "Last Updated": "最后更新于"
+  "Last Updated": "最后更新于",
+  "This zite is not crawled": "该站点尚未爬取"
 }

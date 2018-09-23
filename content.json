@@ -1,5 +1,5 @@
 {
- "address": "1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn",
+ "address": "1HoRiznsHbJAqs2bmrVcSd79NTGVFp4Ju2",
  "background-color": "white",
  "description": "A search engine",
  "donate": "By blurHY.\n If you have any idea,please tell me.\nGithub links https://github.com/blurHY/Horizon\n and the spiders https://github.com/blurHY/ZeronetSpider",
@@ -166,11 +166,11 @@
   }
  },
  "inner_path": "content.json",
- "modified": 1537620301,
+ "modified": 1537628187,
  "postmessage_nonce_security": true,
- "signers_sign": "HNFq/CdaiMuMu4ps0/AJLwlOufHlr4KDB4a32m1ZpscOCpyYMKQbGfQslDMAul4j5+3vGPjmlOxSkgejAgsyk0I=",
+ "signers_sign": "GxC74868O2SGsdtjiISoKKPbhXJRfrWcxkc9KlxwYKziHAfbbTEIGcCrQ7uu7BH8W5elV8fzcDNdwS9G4ZnTqy4=",
  "signs": {
-  "1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn": "G8qvciSaQDlQY6tnsU8xv+XUSbQwcjpTSobQq0HFcZAWaN5Uxj4j3cPHQF8s5my2pZg5c9NDHXNInBl6qIngJic="
+  "1HoRiznsHbJAqs2bmrVcSd79NTGVFp4Ju2": "G9wW3VaYtqPjtGAzqbCDMZ8IQrpoPyxo6xGTwpAJQd8rBYWQq0Dm3KevxwYVDlIe2XNuezKiDqqf2wNmTG5iZpk="
  },
  "signs_required": 1,
  "title": "Horizon",
