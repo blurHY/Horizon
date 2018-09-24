@@ -5,21 +5,9 @@
  "donate": "By blurHY.\n If you have any idea,please tell me.\nGithub links https://github.com/blurHY/Horizon\n and the spiders https://github.com/blurHY/ZeronetSpider",
  "favicon": "favicon.gif",
  "files": {
-  ".github/ISSUE_TEMPLATE/bug_report.md": {
-   "sha512": "56c585df0c4c3b40c473aa34056e8f8e263c87b79372a26390c07fc4733aa1a1",
-   "size": 680
-  },
-  ".github/ISSUE_TEMPLATE/feature_request.md": {
-   "sha512": "fbaa622c945e5600a1c6f4c61e75305b2e05c697a7d1be22eb82cfd276e7defc",
-   "size": 577
-  },
   "CONTRIBUTING.md": {
    "sha512": "c31d8ae4857e4d7e0d3c61bd2b35a81b20f703994d5133833adade0a7068201f",
    "size": 51
-  },
-  "LICENSE": {
-   "sha512": "4937848b94f5b50ea16c51f9e98fdcd3953aca63d63ca3bb05d8a62c107e382b",
-   "size": 35821
   },
   "README.md": {
    "sha512": "573c747000404c69f22be913ac93d79ff873e18090a4a7e1f8a7dea357de63f2",
@@ -56,18 +44,6 @@
   "data/data_phrases1.json.gz": {
    "sha512": "e833fbf418804e7af17cace0086daec75f87e9c9aab535921d9664a98170f66e",
    "size": 3347288
-  },
-  "data/data_relationship1.json.gz": {
-   "sha512": "fb7d31cd0d2033fc75faae192d5ef473ca7cd19832e51a4024161b4de828b300",
-   "size": 2197791
-  },
-  "data/data_relationship2.json.gz": {
-   "sha512": "46816ca666133445158ac6560d00d744909d832d758f7fe6fdab5d6ba9b718b7",
-   "size": 2425075
-  },
-  "data/data_relationship3.json.gz": {
-   "sha512": "06927e72e741c4975942ae456dc6ff11fe8a4155e0426e2866246a0dda920905",
-   "size": 1197466
   },
   "data/data_zites1.json.gz": {
    "sha512": "dc563f8853bab37637aa797efac2582cc6eae8bffb49781ccc12decc25eee003",
@@ -149,10 +125,6 @@
    "sha512": "c5fa497c8692ff869912148571064a635801b1288bddd5234a6941ba0b635292",
    "size": 274512
   },
-  "stats.js": {
-   "sha512": "96afc1bfe2f719539e3836c35cebc6ea3cad47dd33d64c3a72a2eacea39ca48c",
-   "size": 2621
-  },
   "themes/default/assets/images/flags.png": {
    "sha512": "5470424a23d61248974ae1886e6e38e78685b7957b05445b1c12b9ca355faa81",
    "size": 28123
@@ -162,7 +134,25 @@
    "size": 34468
   }
  },
- "ignore": ".idea/.*|.git/.*|.gitignore|data/.*db",
+ "files_optional": {
+  "LICENSE": {
+   "sha512": "4937848b94f5b50ea16c51f9e98fdcd3953aca63d63ca3bb05d8a62c107e382b",
+   "size": 35821
+  },
+  "data/data_relationship1.json.gz": {
+   "sha512": "fb7d31cd0d2033fc75faae192d5ef473ca7cd19832e51a4024161b4de828b300",
+   "size": 2197791
+  },
+  "data/data_relationship2.json.gz": {
+   "sha512": "46816ca666133445158ac6560d00d744909d832d758f7fe6fdab5d6ba9b718b7",
+   "size": 2425075
+  },
+  "data/data_relationship3.json.gz": {
+   "sha512": "06927e72e741c4975942ae456dc6ff11fe8a4155e0426e2866246a0dda920905",
+   "size": 1197466
+  }
+ },
+ "ignore": "([.]idea/|[.]github/|[.]git).*|[.]gitignore|data/.*db",
  "includes": {
   "data/users/content.json": {
    "signers": [],
@@ -170,11 +160,12 @@
   }
  },
  "inner_path": "content.json",
- "modified": 1537771474,
+ "modified": 1537793182,
+ "optional": "data/data_relationship[0-9].json|LICENSE",
  "postmessage_nonce_security": true,
  "signers_sign": "GxC74868O2SGsdtjiISoKKPbhXJRfrWcxkc9KlxwYKziHAfbbTEIGcCrQ7uu7BH8W5elV8fzcDNdwS9G4ZnTqy4=",
  "signs": {
-  "1HoRiznsHbJAqs2bmrVcSd79NTGVFp4Ju2": "HL8DVAoterAP3tR5hrTREklHo+uXExyBI2UTcp/J/LcZMnY4RqJS/DdJKL7hkeN8FxmnMr/gMq+RMGEPVMbkHlA="
+  "1HoRiznsHbJAqs2bmrVcSd79NTGVFp4Ju2": "HGDqe9yxXS6RX1fekOZpajx5Hk1IrH5NAas9aWqKLIBoHhSZoGnLVxy1CMslNaHmSx6W6hs/Yi4lvti3Kq/judg="
  },
  "signs_required": 1,
  "title": "Horizon",
