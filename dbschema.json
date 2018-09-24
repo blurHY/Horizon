@@ -105,7 +105,7 @@
       "cols": [
         [
           "id",
-          "UNSIGNED INT"
+          "UNSIGNED INT primary key"
         ],
         [
           "url",
@@ -133,8 +133,9 @@
         ]
       ],
       "indexes": [
+        "create index query_main on main (id,url,title)"
       ],
-      "schema_changed": 3
+      "schema_changed": 4
     },
     "keywords": {
       "cols": [
@@ -152,14 +153,15 @@
         ]
       ],
       "indexes": [
+        "create index query_kw on keywords (pageid,keyword)"
       ],
-      "schema_changed": 3
+      "schema_changed": 5
     },
     "phrases": {
       "cols": [
         [
           "pageid",
-          "UNSIGNED INT"
+          "UNSIGNED INT primary key"
         ],
         [
           "phrase",
@@ -171,8 +173,9 @@
         ]
       ],
       "indexes": [
+        "create index query_ph on phrases (pageid,phrase)"
       ],
-      "schema_changed": 3
+      "schema_changed": 4
     },
     "relationship": {
       "cols": [
@@ -190,17 +193,18 @@
         ]
       ],
       "indexes": [
+        "create index query_rela on relationship (parent,sub)"
       ],
-      "schema_changed": 2
+      "schema_changed": 4
     },
     "zites": {
       "cols": [
         [
           "ziteid",
-          "UNSIGNED INT"
+          "UNSIGNED INT primary key"
         ],
         [
-          "desciption",
+          "description",
           "VARCHAR(2000)"
         ],
         [
@@ -269,8 +273,9 @@
         ]
       ],
       "indexes": [
+        "create index zites_query on zites (ziteid,description,address)"
       ],
-      "schema_changed": 2
+      "schema_changed": 3
     },
     "names": {
       "cols": [
@@ -288,8 +293,9 @@
         ]
       ],
       "indexes": [
+        "create index names_index on names (domain,address)"
       ],
-      "schema_changed": 1
+      "schema_changed": 2
     }
   }
 }
