@@ -5,7 +5,7 @@
 
 A zeronet search engine
 
-http://127.0.0.1:43110/1CjMsvhJ2JsV4B5qo3FDHnF3mvRCcHuxBn/
+http://127.0.0.1:43110/1HoRiznsHbJAqs2bmrVcSd79NTGVFp4Ju2/
 
 
 Feel free to PR/Issue.
