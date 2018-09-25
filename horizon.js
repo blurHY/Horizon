@@ -97,7 +97,7 @@ class Page extends ZeroFrame {
 
 	checkServerVersion() {
 		if (this.serverInfo.rev < 3582) {
-			this.cmd("wrapperNotification", ["error", "Please update your zeronet client.Horizon won't works below rev3582"])
+			this.cmd("wrapperNotification", ["error", "Please update your zeronet client. Horizon won't work below rev3582"])
 		}
 	}
 
@@ -112,7 +112,7 @@ class Page extends ZeroFrame {
 
 		if (kw < kw_ || ph < ph_ || ma < ma_) {
 			if (!page.fileNotArrived)
-				page.cmd("wrapperNotification", ["info", "Some files are not downloaded yet.You should wait for them."])
+				page.cmd("wrapperNotification", ["info", "Some files are not downloaded yet. You should wait for them."])
 			page.fileNotArrived = true
 			setTimeout(() => {
 				page.checkFileExist(list, time + 1)
@@ -127,10 +127,10 @@ class Page extends ZeroFrame {
 	checkDataBase() {
 		page.cmd("dbQuery", ["select count(*) as val from main"], res => {
 			if (res[0].val === 0) {
-				page.cmd("wrapperNotification", ["info", "Maybe there is something wrong in your zeronet client.Please check the logs."])
+				page.cmd("wrapperNotification", ["info", "Maybe there is something wrong in your zeronet client. Please check the logs."])
 			}
 			else if (res[0].val < 100000) {
-				page.cmd("wrapperNotification", ["info", "Database is still importing.So it will be slow to search now."])
+				page.cmd("wrapperNotification", ["info", "Database is still importing. So it will be slow to search now."])
 			}
 		})
 	}
@@ -145,7 +145,7 @@ class Page extends ZeroFrame {
 					cb()
 			}
 			catch (e) {
-				showError("Content json is broken")
+				showError("content.json is broken")
 			}
 		})
 	}
@@ -981,7 +981,7 @@ class Page extends ZeroFrame {
 		this.emptyItem()
 		scrollTo(0, 0)
 		if (this.searchResult.length < 1) {
-			cot.append(this.generateItem("Sorry,noting found", 0, null, "/", "Please type fewer keywords.And use whitespace to separate them"))
+			cot.append(this.generateItem("Sorry, nothing found", 0, null, "/", "Please type fewer keywords.And use whitespace to separate them"))
 		}
 		let func = () => {
 			let start = this.pagenum * this.perPageCount
@@ -1347,7 +1347,7 @@ class Page extends ZeroFrame {
 					openNewWindow: true,
 					corszites: []
 				}
-				page.cmd("wrapperNotification", ["info", "If Horzion not works,please report it to github https://github.com/blurHY/Horizon/", 10000])
+				page.cmd("wrapperNotification", ["info", "If Horzion does not work, please report it on github at https://github.com/blurHY/Horizon/", 10000])
 			}
 			if (!res.corszites)
 				res.corszites = []
