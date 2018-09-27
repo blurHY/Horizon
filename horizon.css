@@ -520,7 +520,7 @@ a {
 }
 
 .corsinsettings .header:after {
-    content: "Enbaled";
+    content: "Enabled";
     font-size: small;
     color: #e72e2e;
     opacity: 0.5;
