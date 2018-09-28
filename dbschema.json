@@ -3,27 +3,32 @@
   "db_file": "data/Horizon.db",
   "version": 2,
   "maps": {
-    "data_main[0-9].json": {
+    "data_main.+.json": {
       "to_table": [
         "main"
       ]
     },
-    "data_keywords[0-9].json": {
+    "data_keywords.+.json": {
       "to_table": [
         "keywords"
       ]
     },
-    "data_phrases[0-9].json": {
+    "data_phrases.+.json": {
       "to_table": [
         "phrases"
       ]
     },
-    "data_relationship[0-9].json": {
+    "data_relationship.+.json": {
       "to_table": [
-        "relationship"
+        {
+          "node": "relationship",
+          "table": "relationship",
+          "key_col": "parent",
+          "val_col": "sub"
+        }
       ]
     },
-    "data_zites[0-9].json": {
+    "data_zites.+.json": {
       "to_table": [
         "zites"
       ]
