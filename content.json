@@ -130,8 +130,8 @@
    "size": 10998
   },
   "horizon.js": {
-   "sha512": "15fce6f85303b67d862ef63734cb41df01fa0b737565566f02b8800f04bfe0fc",
-   "size": 50968
+   "sha512": "56a6b8f9d6be034ffe6a20435a48489bbe45b65ebf6dd50645a5b1c5c084b62b",
+   "size": 51060
   },
   "index.html": {
    "sha512": "0c9d145a45d3183922d88292da61f3955af7afe0b1d559fe4b7954c6e2837eed",
@@ -256,12 +256,12 @@
   }
  },
  "inner_path": "content.json",
- "modified": 1538368613,
+ "modified": 1538376972,
  "optional": "data/data_relationship.+[.]json|LICENSE",
  "postmessage_nonce_security": true,
  "signers_sign": "GxC74868O2SGsdtjiISoKKPbhXJRfrWcxkc9KlxwYKziHAfbbTEIGcCrQ7uu7BH8W5elV8fzcDNdwS9G4ZnTqy4=",
  "signs": {
-  "1HoRiznsHbJAqs2bmrVcSd79NTGVFp4Ju2": "HCXWyrM+VoIvYmmpcmIp+prLCpmFLhLwNZCJvwvlhzb1Bpb3beQfX97HtfbyBqrt6TcaVc1AR1bbs2GeoKyHTCI="
+  "1HoRiznsHbJAqs2bmrVcSd79NTGVFp4Ju2": "Gy4PW/e3Q0VVmTLGAgFvKM95PuFrlLC2yk8jb0jZqQ+QA1XmuAkp9CZg2Up6ujjtYsfxACN1wLxNKpTvmP/qmls="
  },
  "signs_required": 1,
  "title": "Horizon",

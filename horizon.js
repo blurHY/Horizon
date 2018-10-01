@@ -521,16 +521,16 @@ class Page extends ZeroFrame {
 		let cases = []
 		if (phrase)
 			for (let f of fields) {
-				cases.push(`(case when ${f} like "%${escapeSql(this.searchQuery)}%" then 1 else 0 end)*20`)
+				cases.push(`(case when ${f} like "%${escapeSql(this.searchQuery)}%" then 1 else 0 end)*50`)
 				for (let q of this.querySplited) {
-					cases.push(`(case when ${f} like "% ${escapeSql(q)} %" then 1 else 0 end)*3`)
-					cases.push(`(case when ${f} like "% ${escapeSql(q)} %" then 1 collate nocase else 0 end)*2`)
+					cases.push(`(case when ${f} like "% ${escapeSql(q)} %" then 1 else 0 end)*10`)
+					cases.push(`(case when ${f} like "% ${escapeSql(q)} %" then 1 collate nocase else 0 end)*5`)
 				}
 			}
 		else
 			for (let f of fields) {
 				for (let q of this.querySplited) {
-					cases.push(`(case when ${f} like "%${escapeSql(q)}%" then 1 else 0 end)*3`)
+					cases.push(`(case when ${f} like "%${escapeSql(q)}%" then 1 else 0 end)*5`)
 					cases.push(`(case when ${f} like "%${escapeSql(q)}%" then 1 collate nocase else 0 end)*2`)
 				}
 			}
@@ -549,6 +549,7 @@ class Page extends ZeroFrame {
 				       group_concat(keyword)                   as keywords_raw,
 				       group_concat(distinct(keyword))         as keywords_distinct,
 				       group_concat(phrase, char(10))          as phrases,
+				       group_concat(distinct(phrase))          as phrases_distinct,
 				       group_concat(url, "|")                  as urls,
 				       group_concat(secondres.title,
 				                    char(10))                  as titles_raw,
@@ -998,7 +999,7 @@ class Page extends ZeroFrame {
 			let item = null
 			switch (this.getItemType(i)) {
 				case "normal":
-					item = this.generateItem(i.title, i.imgcsum, i.id, i.site_addr, (i.keywords_distinct ? i.keywords_distinct : "") + (i.phrases ? i.phrases : ""))
+					item = this.generateItem(i.title, i.imgcsum, i.id, i.site_addr, (i.keywords_distinct ? i.keywords_distinct : "") + (i.phrases_distinct ? i.phrases_distinct : ""))
 					item.data("siteaddr", i.site_addr) // real addr
 					item.data("obj", i)
 					this.generateItem_addZerositesData(i, item)
