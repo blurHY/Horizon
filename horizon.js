@@ -274,7 +274,7 @@ class Page extends ZeroFrame {
 		let arr = []
 		for (let f of fields)
 			for (let q in this.querySplited)
-				arr.push(`lower(${f} like '%${escapeSql(this.querySplited[q]).toLowerCase()}%') desc`)
+				arr.push(`(${f} like '%${escapeSql(this.querySplited[q])}%' collate nocase) desc`)
 		return arr.join(",")
 	}
 
@@ -351,47 +351,16 @@ class Page extends ZeroFrame {
 		}
 	}
 
-	insertItems(dbQueryRes, random) {
-		// Randomly insert ZeroTalk&ZeroUp items (because that's sorted)
-		// Make ZeroBlog items rank ahead (User subscribed)
-		console.log(dbQueryRes)
-
-		function randomInsert(startnum, endnum, step, array) {
-			for (let i = 0; i < array.length; i++) {
-				page.searchResult.splice(startnum + i * step, 0, array[i])
-			}
+	insertItems(dbQueryRes) {
+		let step = this.searchResult.length / dbQueryRes.length
+		if (step < 1) {
+			[this.searchResult, dbQueryRes] = [dbQueryRes, this.searchResult]
+			step = this.searchResult.length / dbQueryRes.length
 		}
+		step = Math.ceil(step)
 
-		if (random) {
-			let start = Math.ceil(this.perPageCount / 3)
-			let end = this.searchResult.length
-			let count = (end - start)
-			let step = count / dbQueryRes.length
-			if (!isFinite(step)) {
-				return
-			}
-			randomInsert(start, end, step, dbQueryRes)
-		} else { // For zeroblog
-			let start = Math.ceil(this.perPageCount / 4)
-			let end = this.perPageCount
-			let count = (end - start)
-			let countonpage = count / 3
-			let step = count / countonpage
-			if (!isFinite(step)) {
-				return
-			}
-			randomInsert(start, end, step, dbQueryRes.slice(0, countonpage))
-
-			start = this.perPageCount
-			end = this.searchResult.length
-			count = (end - start)
-			let left = dbQueryRes.slice(countonpage)
-			step = count / left
-			if (!isFinite(step)) {
-				return
-			}
-			randomInsert(start, end, step, left)
-		}
+		for (let i = dbQueryRes.length - 1; i > 0; i--)
+			this.searchResult.splice(i * step, 0, dbQueryRes[i])
 	}
 
 	searchFollowedCORS(cb) { //CORS in settings
@@ -412,10 +381,12 @@ class Page extends ZeroFrame {
 							page.carditems.push(page.processWikiRes(res, item.address))
 							break
 						case "ZeroBlog":
-							page.insertItems(res, false)
+							page.insertItems(res)
+							break
 						case "ZeroTalk":
 						case "ZeroUp":
-							page.insertItems(res, true)
+							page.insertItems(res)
+							break
 					}
 					next(index + 1)
 				})
@@ -430,13 +401,13 @@ class Page extends ZeroFrame {
 		let conds = []
 		for (let x in this.querySplited) {
 			if (this.fuzzysearch_wiki) {
-				conds.push(`lower(slug) like "%${escapeSql(this.querySplited[x].toLowerCase())}%" escape "\\"`)
-				conds.push(`lower(slug) like "%${escapeSql(encodeURIComponent(this.querySplited[x].toLowerCase()).toLowerCase())}%" escape "\\"`) // Some Chinese wiki encoded slug
-				conds.push(`lower(slug) like "%${escapeSql(encodeURIComponent(this.querySplited[x].toUpperCase()).toLowerCase())}%" escape "\\"`)
+				conds.push(`slug like "%${escapeSql(this.querySplited[x])}%" escape "\\" collate nocase`)
+				conds.push(`slug like "%${escapeSql(encodeURIComponent(this.querySplited[x]))}%" escape "\\" collate nocase`) // Some Chinese wiki encoded slug
+				conds.push(`slug like "%${escapeSql(encodeURIComponent(this.querySplited[x]))}%" escape "\\" collate nocase`)
 			} else {
-				conds.push(`lower(slug) = "${escapeSql(this.querySplited[x].toLowerCase())}"`)
-				conds.push(`lower(slug) = "${escapeSql(encodeURIComponent(this.querySplited[x].toLowerCase()).toLowerCase())}"`) // Some Chinese wiki encoded slug
-				conds.push(`lower(slug) = "${escapeSql(encodeURIComponent(this.querySplited[x].toUpperCase()).toLowerCase())}"`)
+				conds.push(`slug = "${escapeSql(this.querySplited[x])}" collate nocase`)
+				conds.push(`slug = "${escapeSql(encodeURIComponent(this.querySplited[x]))}" collate nocase`) // Some Chinese wiki encoded slug
+				conds.push(`slug = "${escapeSql(encodeURIComponent(this.querySplited[x]))}" collate nocase`)
 			}
 		}
 		return `select body,date_added,slug,"${escapeSql(siteaddr)}" as siteaddr,"/${escapeSql(siteaddr)}/?Page:" || slug as link from pages where date_added in (select max(date_added) from pages where ${conds.join(" or ")} group by slug limit 2) order by date_added desc limit 2`
@@ -465,61 +436,24 @@ class Page extends ZeroFrame {
 
 		function allSearched() {
 			showProgress(90, "Rendering")
-			page.needToQuery_zites_obj = {}
-			page.needToQuery_zites = new Set()
 			page.searchResult_count = page.searchResult.length
-			page.setSiteRootData(page.searchResult)
-			showProgress(95, "Merge items")
-			let donecount = 0
-
-			function final() {
-				if (donecount < 2)
-					return
-				page.getZiteDataOfItems(() => {
-					page.finalSort()
-					page.displayCards()
-					page.displayItems()
-					let time = (Date.now() - lastnow) / 1000
-					showProgress(100, "Done")
-					page.showStat(page.searchResult_count, time)
-				})
-			}
-
-			page.mergeItems_addData(page.searchResult, true, () => {
-				donecount++
-				final()
-			})
-
 			page.processWikiRes(page.wikires, "138R53t3ZW7KDfSfxVpWUsMXgwUnsDNXLP")
 			page.carditems = page.carditems.concat(page.wikires)
-			donecount++
-			final()
+			page.displayCards()
+			page.displayItems()
+			let time = (Date.now() - lastnow) / 1000
+			showProgress(100, "Done")
+			page.showStat(page.searchResult_count, time)
 		}
 
 		showProgress(60, "Querying in main database")
 
 		this.searchMain(() => {
 			showProgress(85, "Search CORS")
-			page.searchResult.sort((a, b) => b.itemrank - a.itemrank)
-			if (this.searchResult.length < 50) {
-				this.fuzzysearch = true
-				showProgress(75, "Collecting more infomation")
-				page.searchResult = []
-				this.searchMain(() => {
-					this.searchCORS(() => {
-						allSearched()
-					})
-				})
-			} else
-				this.searchCORS(() => {
-					allSearched()
-				})
+			this.searchCORS(() => {
+				allSearched()
+			})
 		})
-	}
-
-	finalSort() {
-		let halfMaxPeers = maxPeers * 0.4
-		this.searchResult.sort((a, b) => ((b.ziteObj.dbres ? b.ziteObj.dbres.peers : 0) + b.itemrank / this.maxItemRank * halfMaxPeers) - ((a.ziteObj.dbres ? a.ziteObj.dbres.peers : 0) + b.itemrank / this.maxItemRank * halfMaxPeers))
 	}
 
 	processWikiRes(res, siteAddr) {
@@ -536,11 +470,9 @@ class Page extends ZeroFrame {
 		let lastEle = this.querySplited[this.querySplited.length - 1]
 		let res = /^options?:(.*)$/gi.exec(lastEle)
 		this.querySplited.sort((b, a) => a.length - b.length) // from long to short
-		this.fuzzysearch = false
 		if (res) {
 			this.options = res[1].split(/,|\s+/g).filter(filterblank)
 			this.options.map(o => o.toLowerCase())
-			this.fuzzysearch = this.options.indexOf("fuzzy")
 			delete this.querySplited[this.querySplited.length - 1]
 		}
 		this.excludeQueries = []
@@ -563,7 +495,7 @@ class Page extends ZeroFrame {
 		if (mode !== "exclude") {
 			for (let f in arguments) { // fields
 				for (let q in this.querySplited) {
-					qs.push(`lower(${arguments[f]}) like "%${escapeSql(this.querySplited[q]).toLowerCase()}%" escape "\\"`)
+					qs.push(`${arguments[f]} like "%${escapeSql(this.querySplited[q]).toLowerCase()}%" escape "\\" collate nocase`)
 				}
 			}
 			qs = qs.join(` ${mode} `)
@@ -575,7 +507,7 @@ class Page extends ZeroFrame {
 			let eq = []
 			for (let f in arguments) {
 				for (let q in this.excludeQueries)
-					eq.push(`lower(${arguments[f]}) not like "%${escapeSql(this.excludeQueries[q]).toLowerCase()}%" escape "\\"`)
+					eq.push(`${arguments[f]} not like "%${escapeSql(this.excludeQueries[q]).toLowerCase()}%" escape "\\" collate nocase`)
 			}
 			if (mode !== "exclude")
 				final = `(${final}) and ${eq.join(" and ")}`
@@ -585,37 +517,110 @@ class Page extends ZeroFrame {
 		return final
 	}
 
-	searchMain(cb, type = "normal") {
+	caseWhens(fields, phrase = false) {
+		let cases = []
+		if (phrase)
+			for (let f of fields) {
+				cases.push(`(case when ${f} like "%${escapeSql(this.searchQuery)}%" then 1 else 0 end)*20`)
+				for (let q of this.querySplited) {
+					cases.push(`(case when ${f} like "% ${escapeSql(q)} %" then 1 else 0 end)*3`)
+					cases.push(`(case when ${f} like "% ${escapeSql(q)} %" then 1 collate nocase else 0 end)*2`)
+				}
+			}
+		else
+			for (let f of fields) {
+				for (let q of this.querySplited) {
+					cases.push(`(case when ${f} like "%${escapeSql(q)}%" then 1 else 0 end)*3`)
+					cases.push(`(case when ${f} like "%${escapeSql(q)}%" then 1 collate nocase else 0 end)*2`)
+				}
+			}
+		return cases.join("+")
+	}
+
+	searchMain(cb, type = "groupbyzite") {
 		let query = ""
-		let finalfilter = this.generateLikes("title", "keyw", "phrs", "exclude")
+		let secondresfilter = this.generateLikes("keyword", "phrase", "url", "title", "exclude")
+		let finalfilter = this.generateLikes("description", "exclude")
 		let last = Date.now()
 		switch (type) {
-			case "normal":
-				query = `select 
-						url,main.id,keyw,phrs,itemrank,title,imgcount,state 
-						from
-						(
-							select result.id,group_concat(keyw) as keyw,group_concat(phrs) as phrs,sum(subrank) as itemrank
-							from 
-								(
-									select *,3 as subrank from (select id,NULL as keyw,NULL as phrs from main where ${this.generateLikes("url", "title", this.fuzzysearch ? "or" : "and")})
-									union all
-									select *,1 as subrank from (select pageid as id,keyword as keyw,NULL as phrs from keywords where ${this.generateLikes("keywords.keyword", "or")})
-									union all
-									select *,1 as subrank from (select pageid as id,NULL as keyw,phrase as phrs from phrases where ${this.generateLikes("phrases.phrase", this.fuzzysearch ? "or" : "and")})
-								)
-							as result group by id
-						) as firstres
-						,main
-						where firstres.id=main.id ${finalfilter.trim() ? `and ${finalfilter}` : ""}
-						order by itemrank,state,imgcount,main.id desc`
+			case "groupbyzite":
+				query = `select sum(rank)                               as rank,
+				       group_concat(pageid)                    as pageids,
+				       group_concat(keyword)                   as keywords_raw,
+				       group_concat(distinct(keyword))         as keywords_distinct,
+				       group_concat(phrase, char(10))          as phrases,
+				       group_concat(url, "|")                  as urls,
+				       group_concat(secondres.title,
+				                    char(10))                  as titles_raw,
+				       group_concat(distinct(secondres.title)) as titles_distinct,
+				       group_concat(imgcount)                  as imgcs,
+				       max(site_addr) as site_addr,
+				       max(site_id) as site_id,
+				       zites.*,
+				       sum(imgcount)                           as imgcsum
+				from (select rank,
+				             pageid,
+				             keyword,
+				             phrase,
+				             (case
+				                when firstres.url is null then (select url from main where id = pageid)
+				                else firstres.url end)   as url,
+				             (case
+				                when firstres.title is null then (select title from main where id = pageid)
+				                else firstres.title end) as title,
+				             imgcount,
+				             site_id,
+				             site_addr
+				      from (select pageid,
+				                   keyword,
+				                   null                                             as phrase,
+				                   null                                             as url,
+				                   null                                             as title,
+				                   (${this.caseWhens(["keyword"])}) as rank
+				            from keywords
+				            where ${this.generateLikes("keyword")} collate nocase
+				            union all
+				            select pageid,
+				                   null                                                   as keyword,
+				                   phrase,
+				                   null                                                   as url,
+				                   null                                                   as title,
+				                   (${this.caseWhens(["phrase"], true)}) as rank
+				            from phrases
+				            where ${this.generateLikes("phrase")}
+				            union all
+				            select id                                                                       as pageid,
+				                   null                                                                     as keyword,
+				                   null                                                                     as phrase,
+				                   url,
+				                   title,
+				                   (${this.caseWhens(["title", "url"], true)}) * 2 as rank
+				            from main
+				            where ${this.generateLikes("title", "url")}
+							union all
+				            select null                                                                       as pageid,
+				                   null                                                                     as keyword,
+				                   description                                                                     as phrase,
+				                   null as url,
+				                   title,
+				                   (${this.caseWhens(["description", "title"], true)}) * 3 as rank
+				            from zites
+				            where ${this.generateLikes("title", "description")}
+				            ) as firstres
+				             left join main on pageid = id
+				             ${secondresfilter.trim() ? `where ${secondresfilter}` : ""}
+				             ) as secondres
+				       left join zites on site_id = ziteid
+				       	${finalfilter.trim() ? `where ${finalfilter}` : ""}
+				group by site_id
+				order by rank desc, peers desc`
 				break
 		}
 		console.log(query)
 		this.cmd("dbQuery", [query], (res) => {
 			this.recordDuration("mainQuery", Date.now() - last)
 			this.searchResult = []
-			this.maxItemRank = this.searchResult[0] ? this.searchResult[0].itemrank : 0
+			this.maxItemRank = this.searchResult[0] ? this.searchResult[0].rank : 0
 			this.searchResult = this.searchResult.concat(res)
 			cb()
 		})
@@ -964,7 +969,7 @@ class Page extends ZeroFrame {
 	}
 
 	getItemType(i) {
-		if (typeof i.imgcount !== "undefined")
+		if (typeof i.imgcs !== "undefined")
 			return "normal"
 		if (i.topic_creator_user_name)
 			return "zerotalk"
@@ -983,53 +988,40 @@ class Page extends ZeroFrame {
 		if (this.searchResult.length < 1) {
 			cot.append(this.generateItem("Sorry, nothing found", 0, null, "/", "Please type fewer keywords.And use whitespace to separate them"))
 		}
-		let func = () => {
-			let start = this.pagenum * this.perPageCount
-			let items = this.searchResult.slice(start, start + this.perPageCount)
-			// this.mergeItems_addData(items)
-			console.log(items)
-			for (let i of items) {
-				if (!i)
-					continue
-				let item = null
-				switch (this.getItemType(i)) {
-					case "normal":
-						item = this.generateItem(i.title, i.imgcount, i.id, i.url, (i.keyw ? i.keyw : "") + (i.phrs ? i.phrs : ""))
-						item.data("siteaddr", i.siteroot_addr) // real addr
-						this.generateItem_addZerositesData(i, item)
-						break
-					case "zerotalk":
-						item = this.generateItem(i.title, 0, i.siteaddr + i.topic_id, i.siteaddr + "/?Topic:" + i.row_topic_uri, this.ellipsis(i.body, 150))
-						this.generateItem_addZerotalkData(i, item)
-						break
-					case "zeroup":
-						item = this.generateItem(i.title, 0, i.siteaddr + i.date_added + i.json_id + i.size, `${i.siteaddr}/${i.directory}/${i.file_name}`)
-						this.generateItem_addZeroUpData(i, item)
-						break
-					case "blogpost":
-						item = this.generateItem(i.title, 0, i.siteaddr + i.post_id, `${i.siteaddr}/?Post:${i.post_id}`)
-						this.generateItem_addZeroBlogData(i, item)
-						break
-					default:
-						item = this.generateItem("Unknown", 0, null, "/", "Unknown result item")
-				}
-				cot.append(item)
+
+		let start = this.pagenum * this.perPageCount
+		let items = this.searchResult.slice(start, start + this.perPageCount)
+		console.log(items)
+		for (let i of items) {
+			if (!i)
+				continue
+			let item = null
+			switch (this.getItemType(i)) {
+				case "normal":
+					item = this.generateItem(i.title, i.imgcsum, i.id, i.site_addr, (i.keywords_distinct ? i.keywords_distinct : "") + (i.phrases ? i.phrases : ""))
+					item.data("siteaddr", i.site_addr) // real addr
+					item.data("obj", i)
+					this.generateItem_addZerositesData(i, item)
+					break
+				case "zerotalk":
+					item = this.generateItem(i.title, 0, i.siteaddr + i.topic_id, i.siteaddr + "/?Topic:" + i.row_topic_uri, this.ellipsis(i.body, 150))
+					this.generateItem_addZerotalkData(i, item)
+					break
+				case "zeroup":
+					item = this.generateItem(i.title, 0, i.siteaddr + i.date_added + i.json_id + i.size, `${i.siteaddr}/${i.directory}/${i.file_name}`)
+					this.generateItem_addZeroUpData(i, item)
+					break
+				case "blogpost":
+					item = this.generateItem(i.title, 0, i.siteaddr + i.post_id, `${i.siteaddr}/?Post:${i.post_id}`)
+					this.generateItem_addZeroBlogData(i, item)
+					break
+				default:
+					item = this.generateItem("Unknown", 0, null, "/", "Unknown result item")
 			}
-			$(".minfo").click(this.showMoreInfo)
+			cot.append(item)
 		}
-		if (this.pagenum > 0) {
-			$("div.stat").hide()
-			page.clearCards()
-			if (!LoadAllDataOnce)
-				page.mergeItems_addData(this.searchResult, false, () => {
-					setTimeout(() => this.resetProgress(), 100)
-					func()
-				})
-			else {
-				func()
-			}
-		}
-		else func()
+		$(".minfo").click(this.showMoreInfo)
+
 	}
 
 	GetPos(obj) {
@@ -1043,8 +1035,8 @@ class Page extends ZeroFrame {
 		return pos
 	}
 
-	getWordCloudDataZite(ziteaddr, cb) {
-		page.cmd("dbQuery", [`select count(keyword) as times,keyword from keywords where pageid in (select id from main where url like "${escapeSql(ziteaddr)}%") group by keyword`], res => {
+	getWordCloudDataZite(zite_id, cb) {
+		page.cmd("dbQuery", [`select count(keyword) as times,keyword from keywords where pageid in (select id from main where site_id = ${escapeSql(zite_id)}) group by keyword`], res => {
 			let list = []
 			let max = 1
 			for (let i = 0; i < res.length; i++) {
@@ -1055,43 +1047,41 @@ class Page extends ZeroFrame {
 		})
 	}
 
+
 	showMoreInfo(ev) {
 		ev.stopPropagation()
 		let parentsitem = $(this).parents(".item")
-		let id = parentsitem.data("id")
-		if (typeof id !== "undefined") {
-			let pos = page.GetPos(this)
-			$(".minfoitem").remove() // delete all minfoitems
-			let mitem = $(".minfobox").clone()
-			// if (document.body.clientHeight < 700 || document.body.clientWidth < 1000) {
-			mitem.removeClass("minfobox hide").addClass("item ui segment minfoitem") // present as an item
-			parentsitem.after(mitem)
-			scrollTo(0, parentsitem.offset().top - 110)
-			// } else {
-			// 	mitem = $(".minfobox").css("top", pos.y + 5).css("left", pos.x).removeClass("hide")
-			// }
-			$(mitem).click(ev => {
-				ev.stopPropagation()
-			})
-			let notempty = false
-			let siteaddr = parentsitem.data("siteaddr")
-			if (siteaddr) {
-				mitem.find(".column").show()
-				let mergedurls = mitem.find(".mergedurls").empty().show()
-				mergedurls.click(ev => {
-					if (page.settings.openNewWindow)
-						if (ev.target.tagName === "A") {
-							let href = $(ev.target).data("href")
-							if (href) {
-								ev.stopPropagation()
-								ev.preventDefault()
-								page.cmd("wrapperOpenWindow", href)
-							}
+
+		$(".minfoitem").remove() // delete all minfoitems
+		let mitem = $(".minfobox").clone()
+		mitem.removeClass("minfobox hide").addClass("item ui segment minfoitem") // present as an item
+		parentsitem.after(mitem)
+		scrollTo(0, parentsitem.offset().top - 110)
+		$(mitem).click(ev => {
+			ev.stopPropagation()
+		})
+		let notempty = false
+		let obj = parentsitem.data("obj")
+		if (obj) {
+			let mergedPageUrls = obj.urls.split("|")
+
+			mitem.find(".column").show()
+			let mergedurls = mitem.find(".mergedurls").empty().show()
+			mergedurls.click(ev => {
+				if (page.settings.openNewWindow)
+					if (ev.target.tagName === "A") {
+						let href = $(ev.target).data("href")
+						if (href) {
+							ev.stopPropagation()
+							ev.preventDefault()
+							page.cmd("wrapperOpenWindow", href)
 						}
-				})
-				mitem.find(".mergedrowc").text(page.needToQuery_zites_obj[siteaddr].length)
-				for (let i = 0; i < page.needToQuery_zites_obj[siteaddr].length; i++) {
-					let ele = $(`
+					}
+			})
+			mitem.find(".mergedrowc").text(mergedPageUrls.length)
+			for (let i = 0; i < mergedPageUrls.length; i++) {
+				let shorted = mergedPageUrls[i].replace(new RegExp(`^${obj.site_addr}`, "g"), "")
+				let ele = $(`
 						<div class="item">
 						    <div class="content">
 						      	<h4 class="header"></h4>
@@ -1100,98 +1090,100 @@ class Page extends ZeroFrame {
 								</div>
 						    </div>
 					  	</div>`)
-					ele.find(".header").text(page.needToQuery_zites_obj[siteaddr][i].title)
-					let href = page.processLink(beatifyUrl(page.needToQuery_zites_obj[siteaddr][i].url))
-					ele.find(".link").text(href).data("href", href).attr("href", href)
-					mergedurls.append(ele)
-				}
-				let zitei = mitem.find(".ziteinfo>tbody");
-
-				(ziteires => {
-					zitei.empty()
-
-					function addRow(head, data) {
-						let tr = $("<tr></tr>")
-						tr.append($("<td></td>").text(head))
-						tr.append($("<td></td>").text(data))
-						zitei.append(tr)
-					}
-
-					if (!ziteires) {
-						addRow("This zite is not crawled")
-						$(".peernum").remove()
-						$(".znversion").remove()
-						return
-					}
-
-					addRow("address", ziteires.address)
-					if (ziteires.clone_from)
-						addRow("clone_from", ziteires.clone_from)
-					if (ziteires.domain)
-						addRow("domain", ziteires.domain)
-					if (ziteires.desciption)
-						addRow("desciption", ziteires.desciption)
-
-					let thmodif = ziteires.modified * 1000
-
-					mitem.find(".lmodified .detail").text(timeagoinstance.format(thmodif)).attr("title", new Date(thmodif))
-
-					let thlaupd = ziteires.content_updated * 1000
-					if (thlaupd > 0)
-						mitem.find(".lupdate .detail").text(timeagoinstance.format(thlaupd)).attr("title", new Date(thlaupd))
-					else
-						mitem.find(".lupdate").hide()
-
-					$(".peernum").progress({
-						value: ziteires.peers,
-						total: window.maxPeers,
-						showActivity: false,
-						label: "ratio",
-						text: {ratio: "{value}", active: "Peers"}
-					})
-
-					$(".znversion").progress({
-						value: zn_version_to_deci(ziteires.zn_version),
-						total: window.max_zn_ver,
-						showActivity: false,
-						label: "ratio",
-						text: {ratio: "{value}", active: "Zeronet Version"}
-					})
-				})(page.needToQuery_zites_obj[siteaddr].dbres)
-
-
-				let wordc = mitem.find(".wordcloud")
-				wordc.show()
-				wordc.empty().append("<canvas></canvas>")
-				let can = wordc.find("canvas")[0]
-				let canec = echarts.init(can)
-				canec.showLoading("default", {
-					text: "WordCloud",
-					color: "#c23531",
-					textColor: "#000",
-					maskColor: "rgba(255, 255, 255, 0.8)",
-					zlevel: 0
-				})
-				page.getWordCloudDataZite(siteaddr, (wordlist, max) => {
-					canec.hideLoading()
-					canec.dispose()
-					let ave = Math.floor(max / 2)
-					if (wordlist.length > 0) {
-						notempty = true
-						WordCloud(can, {
-							list: wordlist,
-							weightFactor: pt => (pt >= ave) ? (pt / max * 20) : (pt / max * 5)
-						})
-					}
-					else
-						wordc.hide()
-					if (mergedurls.children().length > 0)
-						notempty = true
-				})
-				mitem.find(".column").show()
+				ele.find(".header").text(shorted)
+				let href = page.processLink(beatifyUrl(mergedPageUrls[i]))
+				ele.find(".link").text(href).data("href", href).attr("href", href)
+				mergedurls.append(ele)
 			}
+			let zitei = mitem.find(".ziteinfo>tbody")
+
+			zitei.empty()
+
+			function addRow(head, data) {
+				let tr = $("<tr></tr>")
+				tr.append($("<td></td>").text(head))
+				tr.append($("<td></td>").text(data))
+				zitei.append(tr)
+			}
+
+			addRow("address", obj.site_addr)
+			if (obj.clone_from)
+				addRow("clone_from", obj.clone_from)
+			if (obj.domain)
+				addRow("domain", obj.domain)
+			if (obj.desciption)
+				addRow("desciption", obj.desciption)
+
+			let thmodif = obj.modified * 1000
+			if (thmodif > 0)
+				mitem.find(".lmodified .detail").text(timeagoinstance.format(thmodif)).attr("title", new Date(thmodif))
 			else
-				mitem.find(".nomoredata").show()
+				mitem.find(".lmodified").hide()
+
+			let thlaupd = obj.content_updated * 1000
+			if (thlaupd > 0)
+				mitem.find(".lupdate .detail").text(timeagoinstance.format(thlaupd)).attr("title", new Date(thlaupd))
+			else
+				mitem.find(".lupdate").hide()
+
+			if (obj.peers > 0)
+				$(".peernum").progress({
+					value: obj.peers,
+					total: maxPeers,
+					showActivity: false,
+					label: "ratio",
+					text: {ratio: "{value}", active: "Peers"}
+				})
+			else
+				$(".peernum").remove()
+
+			if (obj.zn_version)
+				$(".znversion").progress({
+					value: zn_version_to_deci(obj.zn_version),
+					total: max_zn_ver,
+					showActivity: false,
+					label: "ratio",
+					text: {ratio: "{value}", active: "Zeronet Version"}
+				})
+			else
+				$(".znversion").remove()
+
+
+			let wordc = mitem.find(".wordcloud")
+			wordc.show()
+			wordc.empty().append("<canvas></canvas>")
+			let can = wordc.find("canvas")[0]
+			let canec = echarts.init(can)
+
+			canec.showLoading("default", {
+				text: "WordCloud",
+				color: "#c23531",
+				textColor: "#000",
+				maskColor: "rgba(255, 255, 255, 0.8)",
+				zlevel: 0
+			})
+
+			page.getWordCloudDataZite(obj.site_id, (wordlist, max) => {
+				canec.hideLoading()
+				canec.dispose()
+				let ave = Math.floor(max / 2)
+				if (wordlist.length > 0) {
+					notempty = true
+					WordCloud(can, {
+						list: wordlist,
+						weightFactor: pt => (pt >= ave) ? (pt / max * 20) : (pt / max * 5)
+					})
+				}
+				else
+					wordc.hide()
+				if (mergedurls.children().length > 0)
+					notempty = true
+			})
+
+			mitem.find(".column").show()
+		}
+		else {
+			mitem.find(".nomoredata").show()
 		}
 	}
 

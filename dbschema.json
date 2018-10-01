@@ -133,6 +133,14 @@
           "UNSIGNED INT"
         ],
         [
+          "site_id",
+          "UNSIGNED INT"
+        ],
+        [
+          "site_addr",
+          "varchar(100)"
+        ],
+        [
           "json_id",
           "INTEGER REFERENCES json (json_id)"
         ]
@@ -140,7 +148,7 @@
       "indexes": [
         "create index query_main on main (id,url,title)"
       ],
-      "schema_changed": 4
+      "schema_changed": 6
     },
     "keywords": {
       "cols": [
