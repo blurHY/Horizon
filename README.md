@@ -12,3 +12,7 @@ Feel free to PR/Issue.
 
 
 The [crawler](https://github.com/blurHY/ZeronetSpider)
+
+Current status: Waiting for zeronet to move to python3.Then rewrite all code
+
+
