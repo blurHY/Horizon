@@ -1,7 +1,7 @@
 # Horizon
 
 
-<img width=200 height=200 src="logo.svg" >
+<img width=500 height=200 src="logo.svg" >
 
 A zeronet search engine
 
