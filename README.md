@@ -1,13 +1,13 @@
 # Horizon
 
-<img width=500 height=200 src="logo.svg" >
+<img width=50% height=auto src="logo.png" >
 
 A zeronet search engine
 
 http://127.0.0.1:43110/1HoRiznsHbJAqs2bmrVcSd79NTGVFp4Ju2/
 
-Feel free to PR/Issue.
+Feel free to PR/Issue. (Don't be shy)
 
-The [crawler](https://github.com/blurHY/ZeronetSpider)
+The [crawler](https://github.com/blurHY/HorizonSpider)
 
-Current status: Waiting for zeronet to move to python3.Then rewrite all code
+Current status: Rewriting all code
