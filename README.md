@@ -2,12 +2,10 @@
 
 <img width=50% height=auto src="logo.svg" >
 
-A ZeroNet/IPFS search engine. (Dat is not ready I think)
+A search engine for ZeroNet/IPFS
 
 http://127.0.0.1:43110/1HoRiznsHbJAqs2bmrVcSd79NTGVFp4Ju2/
 
-Feel free to PR/Issue. (Don't be shy)
+[The Crawler](https://github.com/blurHY/HorizonSpider)
 
-The [crawler](https://github.com/blurHY/HorizonSpider)
-
-Current status: Rewriting all code
+**Current status: Rewriting all code**
