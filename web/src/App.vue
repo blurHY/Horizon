@@ -167,7 +167,7 @@
 <script>
 import dateTime from "date-time";
 import marked from "marked";
-window.addr = webpackHotUpdate
+window.addr = window.webpackHotUpdate
   ? "http://127.0.0.1:8021"
   : "https://api.v4ww.org";
 
