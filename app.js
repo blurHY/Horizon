@@ -28,6 +28,6 @@ server.get('/get/:index/:id', async function (req, res, next) {
     return next();
 });
 
-server.listen(8021, function () {
+server.listen(8021, '127.0.0.1', function () {
     console.log('%s listening at %s', server.name, server.url);
 });
