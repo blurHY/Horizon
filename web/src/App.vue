@@ -16,6 +16,12 @@
             <span class="icon is-small is-right">
               <font-awesome-icon icon="search" />
             </span>
+            <progress
+              class="progress main-progress is-small is-primary"
+              max="100"
+              ref="progress"
+              value="0"
+            >2</progress>
           </p>
         </div>
         <article class="message is-warning" v-if="message.body">
@@ -38,12 +44,13 @@
             </header>
             <div class="card-content">
               <div class="content" v-html="marked(card.body)" v-if="card.body">{{siteContent(card)}}</div>
-              <div v-if="card.inner_path">
+              <div v-if="card.inner_path||card.item_type">
                 <a
                   @click="getSite(card.siteId)"
-                  class="button"
+                  class="button is-small"
                   :data-site="card.siteId"
                 >View site address</a>
+                <span class="tag is-small" v-if="card.url">{{card.url}}</span>
               </div>
             </div>
             <footer class="card-footer">
@@ -114,12 +121,26 @@
 </template>
 
 <style>
+.app,
+.html,
+.body {
+  width: 100%;
+}
 .a {
   margin-top: 200px;
   width: 100%;
   display: flex;
   justify-content: center;
 }
+@media only screen and (max-height: 600px) {
+  .a {
+    margin-top: 20px;
+  }
+  .b {
+    width: 200px;
+  }
+}
+
 .card-footer-item.item_footer {
   display: flex;
   justify-content: space-around;
@@ -128,7 +149,7 @@
   margin: 0 !important;
 }
 .c {
-  max-width: 100%;
+  max-width: 100vw;
   width: 900px;
   justify-content: center;
   display: flex;
@@ -148,20 +169,50 @@
   flex-direction: column;
   margin: 10px;
 }
-.b > * {
-  margin-bottom: 20px;
-  width: 100%;
-}
 .image {
   width: 320px;
 }
+@media only screen and (max-width: 600px) {
+  .a {
+    margin-top: 20px;
+  }
+  .b {
+    width: 90%;
+  }
+  .image {
+    width: 80%;
+  }
+}
+.b > * {
+  margin-bottom: 20px;
+}
+
 .input.main-input {
   -webkit-box-shadow: none;
   box-shadow: none;
+  border: none !important;
 }
 .cards {
   margin: 5px;
   max-width: 100%;
+}
+p.control {
+  width: 100%;
+}
+p.control > * {
+  width: 100%;
+}
+textarea:focus,
+input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+.progress.main-progress {
+  margin-top: -56px;
+  width: calc(100% + 4px);
+  height: 58px !important;
+  margin-left: -2px;
 }
 </style>
 <script>
@@ -169,7 +220,7 @@ import dateTime from "date-time";
 import marked from "marked";
 window.addr = window.webpackHotUpdate
   ? "http://127.0.0.1:8021"
-  : "https://api.v4ww.org";
+  : "https://api.horizon.blurhy.xyz";
 
 export default {
   methods: {
@@ -179,21 +230,29 @@ export default {
         this.prevQ = this.$refs.input.value;
       }
       if (!this.prevQ) return;
+      scrollTo(0, 0);
       let q = `${addr}/q/q="${encodeURI(
         usePrev ? this.prevQ : this.$refs.input.value
       )}",from=${(this.currentPage - 1) * 10}`;
       console.log(q);
-      fetch(q).then(async res => {
-        let r = await res.json();
-        if (r.hits.hits.length === 0) {
-          this.message.header = "Warning";
-          this.message.body = "No results";
-        }
-        if (this.currentPage <= 1) this.total = r.hits.total.value;
-        console.log(r);
-        this.cards = r.hits.hits.map(x => x._source);
-        this.$refs.input.value = "";
-      });
+      this.$refs.progress.removeAttribute("value");
+      fetch(q)
+        .then(async res => {
+          let r = await res.json();
+          if (r.hits.hits.length === 0) {
+            this.message.header = "Warning";
+            this.message.body = "No results";
+          }
+          if (this.currentPage <= 1) this.total = r.hits.total.value;
+          console.log(r);
+          this.cards = r.hits.hits.map(x => x._source);
+          this.$refs.input.value = "";
+          this.$refs.progress.value = 0;
+        })
+        .catch(res => {
+          this.message.body = res;
+          this.$refs.progress.value = 0;
+        });
     },
     next() {
       this.currentPage++;
@@ -210,19 +269,26 @@ export default {
     },
     getSite(siteId, cb) {
       let q = `${addr}/get/site/${siteId}`;
-      fetch(q).then(async res => {
-        let r = await res.json();
-        console.log(r["_source"]);
-        this.site[siteId] = r["_source"];
-        document.querySelectorAll(`.button[data-site='${siteId}']`).forEach(
-          x =>
-            (x.outerHTML = `<div class="tags has-addons">
+      this.$refs.progress.removeAttribute("value");
+      fetch(q)
+        .then(async res => {
+          let r = await res.json();
+          console.log(r["_source"]);
+          this.site[siteId] = r["_source"];
+          document.querySelectorAll(`.button[data-site='${siteId}']`).forEach(
+            x =>
+              (x.outerHTML = `<div class="tags has-addons">
           <span class="tag">Site</span>
           <span class="tag is-success">${this.site[siteId].address}</span>
         </div>`)
-        );
-        if (cb) cb(r);
-      });
+          );
+          if (cb) cb(r);
+          this.$refs.progress.value = 0;
+        })
+        .catch(res => {
+          this.message.body = res;
+          this.$refs.progress.value = 0;
+        });
     },
     enter(e) {
       if (e.keyCode === 13) this.click();
