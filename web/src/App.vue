@@ -279,11 +279,13 @@ export default {
           document
             .querySelectorAll(`.button[data-site='${siteId}']`)
             .forEach(x => {
-              x.style = "display:none";
-              x.outerHTML += `<div class="tags has-addons site-tag">
+              if (x.style !== "display:none") {
+                x.style = "display:none";
+                x.outerHTML += `<div class="tags has-addons site-tag">
           <span class="tag">Site</span>
           <span class="tag is-success">${this.site[siteId].address}</span>
         </div>`;
+              }
             });
           if (cb) cb(r);
           this.$refs.progress.value = 0;
