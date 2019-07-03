@@ -279,7 +279,7 @@ export default {
           document
             .querySelectorAll(`.button[data-site='${siteId}']`)
             .forEach(x => {
-              if (x.style !== "display:none") {
+              if (x.style.display !== "none") {
                 x.style = "display:none";
                 x.outerHTML += `<div class="tags has-addons site-tag">
           <span class="tag">Site</span>
