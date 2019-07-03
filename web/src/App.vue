@@ -134,7 +134,7 @@
 }
 @media only screen and (max-height: 600px) {
   .a {
-    margin-top: 20px;
+    margin-top: 60px;
   }
   .b {
     width: 200px;
@@ -174,7 +174,7 @@
 }
 @media only screen and (max-width: 600px) {
   .a {
-    margin-top: 20px;
+    margin-top: 120px;
   }
   .b {
     width: 90%;
@@ -221,7 +221,7 @@ import marked from "marked";
 window.addr = window.webpackHotUpdate
   ? "http://127.0.0.1:8021"
   : "https://api.horizon.blurhy.xyz";
-
+marked.setOptions({ sanitize: true, baseUrl: "127.0.0.1:43110" });
 export default {
   methods: {
     get(usePrev) {
@@ -230,10 +230,11 @@ export default {
         this.prevQ = this.$refs.input.value;
       }
       if (!this.prevQ) return;
+      this.restoreSiteTags();
       scrollTo(0, 0);
       let q = `${addr}/q/q="${encodeURI(
         usePrev ? this.prevQ : this.$refs.input.value
-      )}",from=${(this.currentPage - 1) * 10}`;
+      )}"&from=${(this.currentPage - 1) * 10}`;
       console.log(q);
       this.$refs.progress.removeAttribute("value");
       fetch(q)
@@ -275,13 +276,15 @@ export default {
           let r = await res.json();
           console.log(r["_source"]);
           this.site[siteId] = r["_source"];
-          document.querySelectorAll(`.button[data-site='${siteId}']`).forEach(
-            x =>
-              (x.outerHTML = `<div class="tags has-addons">
+          document
+            .querySelectorAll(`.button[data-site='${siteId}']`)
+            .forEach(x => {
+              x.style = "display:none";
+              x.outerHTML += `<div class="tags has-addons site-tag">
           <span class="tag">Site</span>
           <span class="tag is-success">${this.site[siteId].address}</span>
-        </div>`)
-          );
+        </div>`;
+            });
           if (cb) cb(r);
           this.$refs.progress.value = 0;
         })
@@ -289,6 +292,17 @@ export default {
           this.message.body = res;
           this.$refs.progress.value = 0;
         });
+    },
+    restoreSiteTags() {
+      document.querySelectorAll(".button").forEach(x => {
+        x.style = "";
+        x.addEventListener("click", x => {
+          this.getSite(x.target.dataset.site);
+        });
+      });
+      document.querySelectorAll(".site-tag").forEach(x => {
+        x.remove();
+      });
     },
     enter(e) {
       if (e.keyCode === 13) this.click();
